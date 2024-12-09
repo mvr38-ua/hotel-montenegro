@@ -1,6 +1,0 @@
-@Hotel_Montenegro_HostAddress = http://localhost:5034
-
-GET {{Hotel_Montenegro_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
