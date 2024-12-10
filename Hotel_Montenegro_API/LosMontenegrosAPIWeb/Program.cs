@@ -1,21 +1,32 @@
+using Microsoft.EntityFrameworkCore;
+using LosMontenegrosAPIWeb.Entidades;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Agregar el contexto de base de datos
+builder.Services.AddDbContext<HotelBDContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Registrar el repositorio
+builder.Services.AddScoped<TemporadaRepository>();
+
+// Agregar controladores
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Configuración de Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurar el pipeline de solicitudes HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
