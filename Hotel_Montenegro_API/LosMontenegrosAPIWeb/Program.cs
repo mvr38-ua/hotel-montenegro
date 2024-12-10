@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using LosMontenegrosAPIWeb.Entidades;
+using LosMontenegrosAPIWeb.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +10,17 @@ builder.Services.AddDbContext<HotelBDContext>(options =>
 
 // Registrar el repositorio
 builder.Services.AddScoped<TemporadaRepository>();
+builder.Services.AddScoped<DireccionUsuarioRepository>();
+builder.Services.AddScoped<ServicioRepository>();
+
 
 // Agregar controladores
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
+
 
 // Configuración de Swagger
 builder.Services.AddEndpointsApiExplorer();
