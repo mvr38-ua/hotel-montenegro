@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using LosMontenegrosAPIWeb.Entidades;
+using LosMontenegrosAPIWeb.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddDbContext<HotelBDContext>(options =>
 
 // Registrar el repositorio
 builder.Services.AddScoped<TemporadaRepository>();
+builder.Services.AddScoped<CategoriaRepository>();
+
 
 // Agregar controladores
 builder.Services.AddControllers();
