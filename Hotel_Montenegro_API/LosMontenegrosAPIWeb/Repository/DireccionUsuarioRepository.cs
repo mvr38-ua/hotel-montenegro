@@ -1,8 +1,5 @@
 ﻿using LosMontenegrosAPIWeb.Entidades;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LosMontenegrosAPIWeb.Repositories
 {
@@ -26,9 +23,7 @@ namespace LosMontenegrosAPIWeb.Repositories
         // Obtener todas las direcciones de usuarios
         public async Task<List<DireccionUsuario>> ObtenerDireccionesAsync()
         {
-            return await _context.DireccionUsuarios
-                                 .Include(d => d.Usuarios) // Incluir usuarios relacionados si es necesario
-                                 .ToListAsync();
+            return await _context.DireccionUsuarios.ToListAsync();
         }
 
         // Obtener una dirección por ID
