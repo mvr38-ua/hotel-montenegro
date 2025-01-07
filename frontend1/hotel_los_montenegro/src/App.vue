@@ -1,11 +1,14 @@
 <template>
   <div id="app">
-    <router-view></router-view> <!-- Este es el punto donde se renderiza el contenido de las rutas -->
+    <Navbar></Navbar>
+    <router-view></router-view> 
   </div>
 </template>
 
 <script setup lang="ts">
-  // Aquí podrías importar otros componentes si los necesitas, aunque para este caso no es necesario.
+import Navbar from './components/Navbar.vue';
+
+
 </script>
 
 <style scoped>

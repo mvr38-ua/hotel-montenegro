@@ -39,6 +39,17 @@ builder.Services.AddScoped<HabitacionRepository>();
 builder.Services.AddScoped<TipoUsuarioRepository>();
 builder.Services.AddScoped<ReservaRepository>();
 
+// Configuración de CORS para permitir solicitudes desde tu frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")  // Asegúrate de usar la URL de tu frontend
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Configuración de controladores y serialización JSON
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -66,6 +77,9 @@ app.UseHttpsRedirection();
 // Usar autenticación y autorización en la aplicación
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Aplicar la política de CORS
+app.UseCors("AllowFrontend");  // Esta línea aplica la política CORS
 
 // Mapear los controladores a las rutas
 app.MapControllers();
