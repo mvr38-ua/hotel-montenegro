@@ -12,6 +12,9 @@
     <router-link to="/webmaster/informes" class="sidebar-item">
       Informes
     </router-link>
+    <router-link to="/webmaster/temporada" class="sidebar-item">
+      Gestion temporadas
+    </router-link>
   </div>
 </template>
 
