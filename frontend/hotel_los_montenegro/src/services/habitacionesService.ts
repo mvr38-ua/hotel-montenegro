@@ -18,6 +18,7 @@ export default {
   },
 
   async crearHabitacion(habitacion: any) {
+    console.log('Cuerpo de la solicitud:', habitacion);
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
@@ -59,5 +60,19 @@ export default {
     if (!response.ok) {
       throw new Error('Error al eliminar habitación');
     }
+  }, 
+
+  async obtenerCategorias() {
+    const response = await fetch('http://localhost:5288/api/Categoriums',{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Error al obtener categorías');
+    }
+    return await response.json();
   }
+  
 };

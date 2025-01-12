@@ -6,11 +6,10 @@ import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
 import Webmaster from './pages/Webmaster.vue';
 import GestionHabitaciones from './components/GestionHabitaciones.vue';
-import GestionTarifas from './components/GestionTarifas.vue';
 import GestionTemporada from './components/GestionarTemporada.vue';
-
 import GestionUsuarios from './components/GestionUsuarios.vue';
 import Informes from './components/Informes.vue';
+import WelcomeWebmaster from './components/WelcomeWebmaster.vue';
 
 const routes = [
   { path: '/', component: Home },
@@ -20,8 +19,8 @@ const routes = [
     path: '/webmaster',
     component: Webmaster,
     children: [
+      { path: '', component: WelcomeWebmaster },
       { path: 'habitaciones', component: GestionHabitaciones },
-      { path: 'tarifas', component: GestionTarifas },
       { path: 'usuarios', component: GestionUsuarios },
       { path: 'informes', component: Informes },
       { path: 'temporada', component: GestionTemporada },

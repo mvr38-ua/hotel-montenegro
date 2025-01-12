@@ -18,7 +18,7 @@ namespace LosMontenegrosAPIWeb.Entidades
         public bool Adaptada { get; set; }
         public int CategoriaId { get; set; }
 
-        public virtual Categorium Categoria { get; set; } = null!;
+        public virtual Categorium? Categoria { get; set; } = null!;
         public virtual ICollection<Reserva> Reservas { get; set; }
     }
 }

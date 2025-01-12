@@ -3,9 +3,6 @@
     <router-link to="/webmaster/habitaciones" class="sidebar-item">
       Gestión de habitaciones
     </router-link>
-    <router-link to="/webmaster/tarifas" class="sidebar-item">
-      Gestión de tarifas
-    </router-link>
     <router-link to="/webmaster/usuarios" class="sidebar-item">
       Gestión de usuarios
     </router-link>
@@ -20,7 +17,7 @@
 
 <style>
 .sidebar {
-  width: 200px;
+  width: 250px;
   background-color: #f5f5f5;
   display: flex;
   flex-direction: column;
