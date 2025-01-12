@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api/Usuario'; // Asegúrate de que la URL sea correcta
+const API_URL = 'http://localhost:5288/api/Usuario'; // Asegúrate de que la URL sea correcta
 
 export default {
   async login(email: string, password: string) {
@@ -18,20 +18,45 @@ export default {
     return data; // Devuelve el token u otros datos
   },
 
-  async register(name: string, email: string, password: string) {
+  async register(userData: {
+    name: string;
+    lastname: string;
+    dni: string;
+    email: string;
+    password: string;
+    phone: string;
+    mobile: string;
+    gender: string;
+    birthdate: string;
+    addressId: number;
+    userTypeId: number;
+  }) {
     const response = await fetch(`${API_URL}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, email, password })
+      body: JSON.stringify({
+        Nombre: userData.name,
+        Apellidos: userData.lastname,
+        Dni: userData.dni,
+        Email: userData.email,
+        Password: userData.password,
+        Telefono: userData.phone,
+        Movil: userData.mobile,
+        Genero: userData.gender,
+        FechaNac: userData.birthdate,
+        DireccionId: userData.addressId,
+        TipoUsuarioId: userData.userTypeId,
+      }),
     });
-
+  
     if (!response.ok) {
-      throw new Error('Registration failed');
+      const errorText = await response.text();
+      throw new Error(`Registration failed: ${errorText}`);
     }
-
-    const data = await response.json();
-    return data; // Devuelve los datos del usuario creado
+  
+    return await response.json();
   }
+  
 };

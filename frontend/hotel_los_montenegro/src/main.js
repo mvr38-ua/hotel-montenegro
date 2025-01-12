@@ -7,6 +7,8 @@ import Register from './pages/Register.vue';
 import Webmaster from './pages/Webmaster.vue';
 import GestionHabitaciones from './components/GestionHabitaciones.vue';
 import GestionTarifas from './components/GestionTarifas.vue';
+import GestionTemporada from './components/GestionarTemporada.vue';
+
 import GestionUsuarios from './components/GestionUsuarios.vue';
 import Informes from './components/Informes.vue';
 
@@ -22,6 +24,8 @@ const routes = [
       { path: 'tarifas', component: GestionTarifas },
       { path: 'usuarios', component: GestionUsuarios },
       { path: 'informes', component: Informes },
+      { path: 'temporada', component: GestionTemporada },
+
     ],
   },
 ];
