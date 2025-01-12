@@ -16,7 +16,7 @@
         <tbody>
           <tr v-for="habitacion in habitaciones" :key="habitacion.id">
             <td>{{ habitacion.numero }}</td>
-            <td>{{ habitacion.precio_base }}</td>
+            <td>{{ habitacion.precioBase }}</td>
             <td>{{ habitacion.capacidad }}</td>
             <td>{{ habitacion.bloqueada }}</td>
             <td>{{ habitacion.adaptada }}</td>
