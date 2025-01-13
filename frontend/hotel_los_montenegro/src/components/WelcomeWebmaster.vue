@@ -13,8 +13,13 @@
   .welcome-message {
     text-align: center;
     margin-top: 20px;
-    font-size: 1.5rem;
     color: #333;
+  }
+  h2 {
+    font-size: 40px;
+  }
+  p {
+    font-size: 20px;
   }
   </style>
   

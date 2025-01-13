@@ -26,9 +26,9 @@ namespace LosMontenegrosAPIWeb.Entidades
         public int DireccionId { get; set; }
         public int ContraseñaId { get; set; }
 
-        public virtual ContraseñaUsuario Contraseña { get; set; } = null!;
-        public virtual DireccionUsuario Direccion { get; set; } = null!;
-        public virtual TipoUsuario TipoUsuario { get; set; } = null!;
+        public virtual ContraseñaUsuario? Contraseña { get; set; } = null!;
+        public virtual DireccionUsuario? Direccion { get; set; } = null!;
+        public virtual TipoUsuario? TipoUsuario { get; set; } = null!;
         public virtual ICollection<Reserva> Reservas { get; set; }
     }
 }

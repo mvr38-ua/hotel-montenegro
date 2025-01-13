@@ -155,7 +155,7 @@ namespace LosMontenegrosAPIWeb.Controllers
 
         // PUT: api/Usuario/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUsuario(int id, [FromBody] Usuario usuario)
+        public async Task<IActionResult> UpdateUsuario(int id, Usuario usuario)
         {
             if (id != usuario.Id)
             {

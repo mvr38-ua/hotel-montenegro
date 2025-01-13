@@ -21,8 +21,8 @@
             <td>{{ habitacion.numero }}</td>
             <td>{{ habitacion.precioBase }}</td>
             <td>{{ habitacion.capacidad }}</td>
-            <td>{{ habitacion.bloqueada }}</td>
-            <td>{{ habitacion.adaptada }}</td>
+            <td>{{ habitacion.bloqueada ? 'Sí' : 'No' }}</td>
+            <td>{{ habitacion.adaptada ? 'Sí' : 'No' }}</td>
             <td>{{ habitacion.categoria.nombre }}</td>
             <td>
               <button class="edit-button" @click="abrirModal(habitacion)">✏️</button>
