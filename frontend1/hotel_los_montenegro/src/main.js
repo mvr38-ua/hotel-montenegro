@@ -4,6 +4,7 @@ import App from './App.vue';
 import Home from './pages/Home.vue';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
+import About from './pages/About.vue';
 import Webmaster from './pages/Webmaster.vue';
 import GestionHabitaciones from './components/GestionHabitaciones.vue';
 import GestionTarifas from './components/GestionTarifas.vue';
@@ -16,6 +17,7 @@ const routes = [
   { path: '/', component: Home },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
+  { path: '/about', component: About},
   {
     path: '/webmaster',
     component: Webmaster,
