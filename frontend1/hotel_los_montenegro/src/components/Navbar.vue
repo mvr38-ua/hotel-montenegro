@@ -4,6 +4,9 @@
       <button @click="toggleMenu">
         <i class="fas fa-bars"></i>
       </button>
+      <div v-if="menuOpen" class="dropdown-menu">
+        <router-link to="/listar" class="dropdown-item" @click="closeMenu">Listar</router-link>
+      </div>
     </div>
     <a href="/" class="logo">
       Los Montenegro
@@ -29,6 +32,7 @@ export default {
   data() {
     return {
       isAuthenticated: false, // Cambiar según el estado real de autenticación
+      menuOpen: false,
     };
   },
   mounted() {
@@ -37,7 +41,10 @@ export default {
   },
   methods: {
     toggleMenu() {
-      console.log("Menú desplegado");
+      this.menuOpen = !this.menuOpen;
+    },
+    closeMenu() {
+      this.menuOpen = false;
     },
     goToProfile() {
       this.$router.push("/profile");
@@ -60,6 +67,30 @@ export default {
 .menu-icon {
   position: absolute;
   left: 10px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  background-color: #333; /* Dark gray background */
+  color: white;
+  border: 1px solid #555; /* Slightly lighter gray border */
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.dropdown-item:hover {
+  background-color: #555; /* Darker gray on hover */
 }
 
 .logo {

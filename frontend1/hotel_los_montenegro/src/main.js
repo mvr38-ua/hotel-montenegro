@@ -5,11 +5,11 @@ import Home from './pages/Home.vue';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
 import About from './pages/About.vue';
+import Listar from './pages/Listar.vue';
 import Webmaster from './pages/Webmaster.vue';
 import GestionHabitaciones from './components/GestionHabitaciones.vue';
 import GestionTarifas from './components/GestionTarifas.vue';
 import GestionTemporada from './components/GestionarTemporada.vue';
-
 import GestionUsuarios from './components/GestionUsuarios.vue';
 import Informes from './components/Informes.vue';
 
@@ -18,6 +18,7 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/register', component: Register },
   { path: '/about', component: About},
+  { path: '/listar', component: Listar},
   {
     path: '/webmaster',
     component: Webmaster,
