@@ -21,13 +21,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { jwtDecode } from 'jwt-decode'; // Instala jwt-decode: npm install jwt-decode
 import api from '../services/api';
 
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
 const aciertoMessage = ref('');
-
 
 const login = async () => {
   try {
@@ -39,9 +39,27 @@ const login = async () => {
     const token = response.data.token;
     localStorage.setItem('token', token); // Guardamos el token en localStorage
     aciertoMessage.value = 'Login correcto.';
-    window.location.href = '/'; // Redirigir a la página de inicio
+
+    // Decodificar el token JWT
+    const decodedToken: { TipoUsuario: string } = jwtDecode(token);
+
+    // Redirigir basado en el tipo de usuario
+    switch (decodedToken.TipoUsuario) {
+      case '1': // Usuario normal
+        window.location.href = '/';
+        break;
+      case '2': // Recepcionista
+        window.location.href = '/recepcionista';
+        break;
+      case '1002': // Administrador
+        window.location.href = '/webmaster';
+        break;
+      default:
+        window.location.href = '/';
+        break;
+    }
   } catch (error) {
-    errorMessage.value = 'Email o password Incorrecto.';
+    errorMessage.value = 'Email o password incorrecto.';
   }
 };
 </script>
