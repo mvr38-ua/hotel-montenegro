@@ -10,6 +10,8 @@ import GestionTemporada from './components/GestionarTemporada.vue';
 import GestionUsuarios from './components/GestionUsuarios.vue';
 import Informes from './components/Informes.vue';
 import WelcomeWebmaster from './components/WelcomeWebmaster.vue';
+import GestionServicio from './components/GestionarServicios.vue';
+import GestionCategoria from './components/GestionarCategorias.vue';
 
 const routes = [
   { path: '/', component: Home },
@@ -24,6 +26,8 @@ const routes = [
       { path: 'usuarios', component: GestionUsuarios },
       { path: 'informes', component: Informes },
       { path: 'temporada', component: GestionTemporada },
+      { path: 'servicio', component: GestionServicio },
+      { path: 'categoria', component: GestionCategoria },
 
     ],
   },

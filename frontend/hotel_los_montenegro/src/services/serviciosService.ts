@@ -1,63 +1,79 @@
-const API_URL = 'http://localhost:5288/api/Temporadums'; 
+const API_URL = 'http://localhost:5288/api/Servicios';
 
 export default {
-  async obtenerTemporadas() {
+  async obtenerServicios() {
     const response = await fetch(API_URL, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-      },
+      }
     });
 
     if (!response.ok) {
-      throw new Error('Error al obtener temporadas');
+      throw new Error('Error al obtener servicios');
     }
 
     const data = await response.json();
     return data;
   },
 
-  async crearTemporada(temporada) {
+  async obtenerServicio(id: number) {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener el servicio');
+    }
+
+    const data = await response.json();
+    return data;
+  },
+
+  async crearServicio(servicio: any) {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(temporada),
+      body: JSON.stringify(servicio)
     });
 
     if (!response.ok) {
-      throw new Error('Error al crear temporada');
+      throw new Error('Error al crear servicio');
     }
 
     const data = await response.json();
     return data;
   },
 
-  async actualizarTemporada(id, temporada) {
+  async actualizarServicio(id: number, servicio: any) {
     const response = await fetch(`${API_URL}/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(temporada),
+      body: JSON.stringify(servicio)
     });
 
     if (!response.ok) {
-      throw new Error('Error al actualizar temporada');
+      throw new Error('Error al actualizar servicio');
     }
   },
 
-  async eliminarTemporada(id) {
+  async eliminarServicio(id: number) {
     const response = await fetch(`${API_URL}/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-      },
+      }
     });
 
     if (!response.ok) {
-      throw new Error('Error al eliminar temporada');
+      throw new Error('Error al eliminar servicio');
     }
   }
 };

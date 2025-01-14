@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5288/api/Usuario'; // Asegúrate de que la URL sea correcta
+const API_URL = 'http://localhost:5288/api/Usuario'; 
 
 export default {
   async login(email: string, password: string) {

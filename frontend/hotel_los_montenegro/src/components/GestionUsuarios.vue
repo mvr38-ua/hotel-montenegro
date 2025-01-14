@@ -133,7 +133,13 @@
   const cargarUsuarios = async () => {
     try {
       const response = await usuariosService.obtenerUsuarios();
-      usuarios.value = response.$values;
+      usuarios.value = response.$values.map(usuario => ({
+      ...usuario,
+      fechaNac: usuario.fechaNac 
+        ? new Date(usuario.fechaNac).toISOString().split("T")[0] // Formatear fecha
+        : null, // Manejar fechas nulas si es necesario
+    }));
+
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
     }

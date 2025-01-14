@@ -6,11 +6,17 @@
     <router-link to="/webmaster/usuarios" class="sidebar-item">
       Gestión de usuarios
     </router-link>
-    <router-link to="/webmaster/informes" class="sidebar-item">
-      Informes
+    <router-link to="/webmaster/servicio" class="sidebar-item">
+      Gestión servicios
+    </router-link>
+    <router-link to="/webmaster/categoria" class="sidebar-item">
+      Gestión categorías
     </router-link>
     <router-link to="/webmaster/temporada" class="sidebar-item">
-      Gestion temporadas
+      Gestión temporadas
+    </router-link>
+    <router-link to="/webmaster/informes" class="sidebar-item">
+      Informes
     </router-link>
   </div>
 </template>

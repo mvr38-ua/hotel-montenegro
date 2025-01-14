@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5288/api/Usuario'; // Cambia la URL si tu API está alojada en otro lugar
+const API_URL = 'http://localhost:5288/api/Usuario'; 
 
 export default {
   async obtenerUsuarios() {
