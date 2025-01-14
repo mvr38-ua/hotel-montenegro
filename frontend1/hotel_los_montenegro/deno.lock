@@ -4,6 +4,7 @@
     "npm:@vitejs/plugin-vue@^5.2.1": "5.2.1_vite@6.0.7_vue@3.5.13__typescript@5.6.3_typescript@5.6.3",
     "npm:@vue/tsconfig@0.7": "0.7.0_typescript@5.6.3_vue@3.5.13__typescript@5.6.3",
     "npm:axios@^1.7.9": "1.7.9",
+    "npm:jwt-decode@4": "4.0.0",
     "npm:typescript@~5.6.2": "5.6.3",
     "npm:vite@^6.0.5": "6.0.7",
     "npm:vue-router@^4.5.0": "4.5.0_vue@3.5.13__typescript@5.6.3_typescript@5.6.3",
@@ -385,6 +386,9 @@
     "he@1.2.0": {
       "integrity": "sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw=="
     },
+    "jwt-decode@4.0.0": {
+      "integrity": "sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA=="
+    },
     "magic-string@0.30.17": {
       "integrity": "sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==",
       "dependencies": [
@@ -506,6 +510,7 @@
         "npm:@vitejs/plugin-vue@^5.2.1",
         "npm:@vue/tsconfig@0.7",
         "npm:axios@^1.7.9",
+        "npm:jwt-decode@4",
         "npm:typescript@~5.6.2",
         "npm:vite@^6.0.5",
         "npm:vue-router@^4.5.0",
