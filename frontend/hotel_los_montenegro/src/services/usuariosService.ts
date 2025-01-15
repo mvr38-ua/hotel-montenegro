@@ -1,7 +1,7 @@
-const API_URL = 'http://localhost:5288/api/Habitaciones'; // Cambia la URL si tu API está alojada en otro lugar
+const API_URL = 'http://localhost:5288/api/Usuario'; 
 
 export default {
-  async obtenerHabitaciones() {
+  async obtenerUsuarios() {
     const response = await fetch(API_URL, {
       method: 'GET',
       headers: {
@@ -10,37 +10,21 @@ export default {
     });
 
     if (!response.ok) {
-      throw new Error('Error al obtener habitaciones');
+      throw new Error('Error al obtener Usuario');
     }
 
     const data = await response.json();
     return data;
   },
 
-  async crearHabitacion(habitacion: any) {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(habitacion)
-    });
-
-    if (!response.ok) {
-      throw new Error('Error al crear habitación');
-    }
-
-    const data = await response.json();
-    return data;
-  },
-
-  async actualizarHabitacion(id: string, habitacion: any) {
+  async actualizarUsuario(id: string, usuario: any) {
+    console.log(usuario);
     const response = await fetch(`${API_URL}/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(habitacion)
+      body: JSON.stringify(usuario)
     });
 
     if (!response.ok) {
@@ -48,7 +32,7 @@ export default {
     }
   },
 
-  async eliminarHabitacion(id: string) {
+  async eliminarUsuario(id: string) {
     const response = await fetch(`${API_URL}/${id}`, {
       method: 'DELETE',
       headers: {
@@ -59,5 +43,19 @@ export default {
     if (!response.ok) {
       throw new Error('Error al eliminar habitación');
     }
+  }, 
+
+  async obtenerTiposUsuario() {
+    const response = await fetch('http://localhost:5288/api/TipoUsuarios',{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Error al obtener categorías');
+    }
+    return await response.json();
   }
+  
 };

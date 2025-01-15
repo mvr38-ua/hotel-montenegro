@@ -26,7 +26,22 @@ namespace LosMontenegrosAPIWeb.Repositories
         // Leer todos
         public async Task<List<Habitacion>> ObtenerHabitacionesAsync()
         {
-            return await _context.Habitacions.ToListAsync();
+            return await _context.Habitacions.Include(h => h.Categoria)
+                .Select(h => new Habitacion
+            {
+                Id = h.Id,
+                Numero = h.Numero,
+                PrecioBase = h.PrecioBase,
+                Capacidad = h.Capacidad,
+                Bloqueada = h.Bloqueada,
+                Adaptada = h.Adaptada,
+                CategoriaId = h.CategoriaId,
+                Categoria = new Categorium
+                {
+                    Id = h.Categoria.Id,
+                    Nombre = h.Categoria.Nombre
+                }
+                }).ToListAsync();
         }
 
         // Leer por Id

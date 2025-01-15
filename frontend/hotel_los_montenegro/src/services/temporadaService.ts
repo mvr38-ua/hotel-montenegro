@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5288/api/Temporadums'; // Cambia la URL si tu API está alojada en otro lugar
+const API_URL = 'http://localhost:5288/api/Temporadums'; 
 
 export default {
   async obtenerTemporadas() {

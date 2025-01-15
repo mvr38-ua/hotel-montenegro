@@ -1,7 +1,9 @@
 <template>
     <div class="gestion-temporadas">
-      <h2>Listado de Temporadas</h2>
-      <button class="add-button" @click="nuevaTemporada">Añadir nueva</button>
+      <div class="header-container">
+        <h2>Listado de Temporadas</h2>
+        <button class="add-button" @click="nuevaTemporada">Añadir nueva</button>
+      </div>
       <table class="table">
         <thead>
           <tr>
@@ -121,26 +123,36 @@
   <style scoped>
   .gestion-temporadas {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
   }
   
   h2 {
     margin-bottom: 20px;
     font-size: 1.5rem;
+    font-family: 'Montserrat', sans-serif; /* Asegúrate de que la fuente esté aplicada */
+    font-weight: 800;
+    display: inline-block;
+    margin-right: 20px; /* Espacio entre el título y el botón */
   }
-  
+
   .add-button {
-    background-color: #007bff;
+    background-color: #707377;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
     font-size: 14px;
-    margin-bottom: 15px;
     cursor: pointer;
+    font-family: 'Montserrat', sans-serif; 
   }
-  
-  .add-button:hover {
-    background-color: #0056b3;
+
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: space-between;
   }
   
   .table {

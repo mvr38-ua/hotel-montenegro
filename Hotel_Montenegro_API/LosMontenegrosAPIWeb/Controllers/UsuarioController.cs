@@ -121,7 +121,7 @@ namespace LosMontenegrosAPIWeb.Controllers
 
             // Devuelve una respuesta con el usuario creado
             return CreatedAtAction(nameof(GetUsuarioById), new { id = usuario.Id }, usuario);
-        
+
         }
 
         // POST: api/Usuario/logout
@@ -155,21 +155,68 @@ namespace LosMontenegrosAPIWeb.Controllers
 
         // PUT: api/Usuario/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUsuario(int id, [FromBody] Usuario usuario)
+        public async Task<IActionResult> UpdateUsuario(int id, [FromBody] Usuario usuarioUpdateModel)
         {
-            if (id != usuario.Id)
+            // Buscar el usuario existente
+            var usuarioExistente = await _hotelBDContext.Usuarios.FindAsync(id);
+            if (usuarioExistente == null)
             {
-                return BadRequest("ID mismatch.");
+                return NotFound($"No se encontró un usuario con el ID {id}.");
             }
 
-            var existingUsuario = await _usuarioRepository.GetUsuarioByIdAsync(id);
-            if (existingUsuario == null)
+            // Actualizar solo los campos proporcionados
+            if (!string.IsNullOrEmpty(usuarioUpdateModel.Nombre))
             {
-                return NotFound();
+                usuarioExistente.Nombre = usuarioUpdateModel.Nombre;
             }
 
-            await _usuarioRepository.UpdateUsuarioAsync(usuario);
-            return NoContent();
+            if (!string.IsNullOrEmpty(usuarioUpdateModel.Apellidos))
+            {
+                usuarioExistente.Apellidos = usuarioUpdateModel.Apellidos;
+            }
+            if (!string.IsNullOrEmpty(usuarioUpdateModel.Email))
+            {
+                usuarioExistente.Email = usuarioUpdateModel.Email;
+            }
+            if (usuarioUpdateModel.Movil.HasValue)
+            {
+                usuarioExistente.Movil = usuarioUpdateModel.Movil.Value;
+            }
+            if (usuarioUpdateModel.Telefono.HasValue)
+            {
+                usuarioExistente.Telefono = usuarioUpdateModel.Telefono.Value;
+            }
+            if (!string.IsNullOrEmpty(usuarioUpdateModel.Genero))
+            {
+                usuarioExistente.Genero = usuarioUpdateModel.Genero;
+            }
+            if (usuarioUpdateModel.FechaNac.HasValue)
+            {
+                usuarioExistente.FechaNac = usuarioUpdateModel.FechaNac.Value;
+            }
+            if (usuarioUpdateModel.TipoUsuarioId.HasValue)
+            {
+                usuarioExistente.TipoUsuarioId = usuarioUpdateModel.TipoUsuarioId.Value;
+            }
+            if (usuarioUpdateModel.DireccionId.HasValue)
+            {
+                usuarioExistente.DireccionId = usuarioUpdateModel.DireccionId.Value;
+            }
+            if (usuarioUpdateModel.ContraseñaId.HasValue)
+            {
+                usuarioExistente.ContraseñaId = usuarioUpdateModel.ContraseñaId.Value;
+            }
+            if (usuarioUpdateModel.Activo.HasValue)
+            {
+                usuarioExistente.Activo = usuarioUpdateModel.Activo.Value;
+            }
+            if (usuarioUpdateModel.FechaBaja.HasValue)
+            {
+                usuarioExistente.FechaBaja = usuarioUpdateModel.FechaBaja.Value;
+            }
+            // Guardar los cambios
+            await _hotelBDContext.SaveChangesAsync();
+            return Ok(usuarioExistente);
         }
 
         // DELETE: api/Usuario/{id}
