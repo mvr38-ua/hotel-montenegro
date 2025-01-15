@@ -232,10 +232,6 @@ namespace LosMontenegrosAPIWeb.Controllers
             return Ok(usuarioExistente);
         }
 
-
-
-
-
         // DELETE: api/Usuario/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
