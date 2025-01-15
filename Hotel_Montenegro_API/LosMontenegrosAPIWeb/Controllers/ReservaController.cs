@@ -115,25 +115,29 @@ namespace LosMontenegrosAPIWeb.Controllers
         }
 
 
-        // GET: api/Reserva/HabitacionesDisponibles
-        [HttpGet("HabitacionesDisponibles")]
-        public async Task<ActionResult<List<Habitacion>>> GetHabitacionesDisponibles(DateTime fechaInicio, DateTime fechaFin)
+        // POST (para que acepte el JSON): api/Reserva/HabitacionesDisponibles
+        [HttpPost("HabitacionesDisponibles")]
+        public async Task<ActionResult<List<Habitacion>>> GetHabitacionesDisponibles([FromBody] FiltroHabitaciones filtro)
         {
-            if (fechaInicio >= fechaFin)
+            if (filtro.FechaInicio >= filtro.FechaFin)
             {
                 return BadRequest("La fecha de inicio debe ser anterior a la fecha de fin.");
             }
 
-            var habitacionesDisponibles = await _habitacionRepository.ObtenerHabitacionesDisponiblesAsync(fechaInicio, fechaFin);
+            var habitacionesDisponibles = await _habitacionRepository.ObtenerHabitacionesDisponiblesAsync(
+                filtro.FechaInicio,
+                filtro.FechaFin,
+                filtro.CapacidadMinima,
+                filtro.CategoriaId
+            );
 
             if (habitacionesDisponibles == null || habitacionesDisponibles.Count == 0)
             {
-                return NotFound("No hay habitaciones disponibles en este rango de fechas.");
+                return NotFound("No hay habitaciones disponibles que cumplan con los filtros proporcionados.");
             }
 
             return Ok(habitacionesDisponibles);
         }
-
 
     }
 }

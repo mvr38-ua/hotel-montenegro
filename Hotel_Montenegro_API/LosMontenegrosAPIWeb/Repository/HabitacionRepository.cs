@@ -59,13 +59,20 @@ namespace LosMontenegrosAPIWeb.Repositories
         }
 
         // Método para obtener habitaciones disponibles
-        public async Task<List<Habitacion>> ObtenerHabitacionesDisponiblesAsync(DateTime fechaInicio, DateTime fechaFin)
+        public async Task<List<Habitacion>> ObtenerHabitacionesDisponiblesAsync(
+            DateTime fechaInicio,
+            DateTime fechaFin,
+            int? capacidadMinima = null,
+            int? categoriaId = null)
         {
             return await _context.Habitacions
-                .Where(h => !h.Bloqueada &&                                                 // Excluir habitaciones bloqueadas
-                            !h.Reservas.Any(r =>
-                                (fechaInicio < r.FechaFinal && fechaFin > r.FechaInicio)    // Validar cruce de fechas
-                            ))
+                .Where(h =>
+                    !h.Bloqueada &&                                                     // Excluir habitaciones bloqueadas
+                    (capacidadMinima == null || h.Capacidad >= capacidadMinima) &&      // Filtrar por capacidad mínima si se especifica
+                    (categoriaId == null || h.CategoriaId == categoriaId) &&            // Filtrar por categoría si se especifica
+                    !h.Reservas.Any(r =>
+                        (fechaInicio < r.FechaFinal && fechaFin > r.FechaInicio)        // Validar cruce de fechas
+                    ))
                 .ToListAsync();
         }
 
