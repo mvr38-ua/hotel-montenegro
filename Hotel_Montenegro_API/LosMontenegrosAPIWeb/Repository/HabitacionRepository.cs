@@ -57,5 +57,49 @@ namespace LosMontenegrosAPIWeb.Repositories
             }
             return false;
         }
+
+        // Método para obtener habitaciones disponibles
+        public async Task<List<Habitacion>> ObtenerHabitacionesDisponiblesAsync(DateTime fechaInicio, DateTime fechaFin)
+        {
+            return await _context.Habitacions
+                .Where(h => !h.Bloqueada &&                                                 // Excluir habitaciones bloqueadas
+                            !h.Reservas.Any(r =>
+                                (fechaInicio < r.FechaFinal && fechaFin > r.FechaInicio)    // Validar cruce de fechas
+                            ))
+                .ToListAsync();
+        }
+
+        // Método para bloquear una habitación
+        public async Task<Habitacion> BloquearHabitacionAsync(int id)
+        {
+            var habitacion = await _context.Habitacions.FindAsync(id);
+
+            if (habitacion == null)
+            {
+                return null; // Si no se encuentra la habitación, Devuelve null
+            }
+
+            habitacion.Bloqueada = true;
+            await _context.SaveChangesAsync();
+
+            return habitacion; // Devuelve la habitación bloqueada
+        }
+
+        // Método para desbloquear una habitación
+        public async Task<Habitacion> DesbloquearHabitacionAsync(int id)
+        {
+            var habitacion = await _context.Habitacions.FindAsync(id);
+
+            if (habitacion == null)
+            {
+                return null; // Si no se encuentra la habitación, Devuelve null
+            }
+
+            habitacion.Bloqueada = false;
+            await _context.SaveChangesAsync();
+
+            return habitacion; // Devuelve la habitación desbloqueada
+        }
+
     }
 }
