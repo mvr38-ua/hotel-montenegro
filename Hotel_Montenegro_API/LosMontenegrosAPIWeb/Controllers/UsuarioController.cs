@@ -121,7 +121,7 @@ namespace LosMontenegrosAPIWeb.Controllers
 
             // Devuelve una respuesta con el usuario creado
             return CreatedAtAction(nameof(GetUsuarioById), new { id = usuario.Id }, usuario);
-        
+
         }
 
         // POST: api/Usuario/logout
@@ -252,7 +252,7 @@ namespace LosMontenegrosAPIWeb.Controllers
             {
         new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
         new Claim(ClaimTypes.Name, usuario.Email),
-        new Claim("TipoUsuario", usuario.TipoUsuarioId.ToString()),  // Puedes agregar más datos aquí
+        new Claim("TipoUsuario", usuario.TipoUsuarioId.ToString()),  
     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("clave_super_secreta_muy_larga_que_asegura_256_bits_1234567890123456"));  // Cambia por tu propia clave secreta

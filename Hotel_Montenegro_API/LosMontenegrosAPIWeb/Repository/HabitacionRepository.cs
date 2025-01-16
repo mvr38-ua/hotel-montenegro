@@ -26,7 +26,22 @@ namespace LosMontenegrosAPIWeb.Repositories
         // Leer todos
         public async Task<List<Habitacion>> ObtenerHabitacionesAsync()
         {
-            return await _context.Habitacions.ToListAsync();
+            return await _context.Habitacions.Include(h => h.Categoria)
+                .Select(h => new Habitacion
+            {
+                Id = h.Id,
+                Numero = h.Numero,
+                PrecioBase = h.PrecioBase,
+                Capacidad = h.Capacidad,
+                Bloqueada = h.Bloqueada,
+                Adaptada = h.Adaptada,
+                CategoriaId = h.CategoriaId,
+                Categoria = new Categorium
+                {
+                    Id = h.Categoria.Id,
+                    Nombre = h.Categoria.Nombre
+                }
+                }).ToListAsync();
         }
 
         // Leer por Id
@@ -57,5 +72,56 @@ namespace LosMontenegrosAPIWeb.Repositories
             }
             return false;
         }
+
+        // Método para obtener habitaciones disponibles
+        public async Task<List<Habitacion>> ObtenerHabitacionesDisponiblesAsync(
+            DateTime fechaInicio,
+            DateTime fechaFin,
+            int? capacidadMinima = null,
+            int? categoriaId = null)
+        {
+            return await _context.Habitacions
+                .Where(h =>
+                    !h.Bloqueada &&                                                     // Excluir habitaciones bloqueadas
+                    (capacidadMinima == null || h.Capacidad >= capacidadMinima) &&      // Filtrar por capacidad mínima si se especifica
+                    (categoriaId == null || h.CategoriaId == categoriaId) &&            // Filtrar por categoría si se especifica
+                    !h.Reservas.Any(r =>
+                        (fechaInicio < r.FechaFinal && fechaFin > r.FechaInicio)        // Validar cruce de fechas
+                    ))
+                .ToListAsync();
+        }
+
+        // Método para bloquear una habitación
+        public async Task<Habitacion> BloquearHabitacionAsync(int id)
+        {
+            var habitacion = await _context.Habitacions.FindAsync(id);
+
+            if (habitacion == null)
+            {
+                return null; // Si no se encuentra la habitación, Devuelve null
+            }
+
+            habitacion.Bloqueada = true;
+            await _context.SaveChangesAsync();
+
+            return habitacion; // Devuelve la habitación bloqueada
+        }
+
+        // Método para desbloquear una habitación
+        public async Task<Habitacion> DesbloquearHabitacionAsync(int id)
+        {
+            var habitacion = await _context.Habitacions.FindAsync(id);
+
+            if (habitacion == null)
+            {
+                return null; // Si no se encuentra la habitación, Devuelve null
+            }
+
+            habitacion.Bloqueada = false;
+            await _context.SaveChangesAsync();
+
+            return habitacion; // Devuelve la habitación desbloqueada
+        }
+
     }
 }

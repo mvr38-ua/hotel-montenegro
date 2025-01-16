@@ -4,6 +4,7 @@ using LosMontenegrosAPIWeb.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace LosMontenegrosAPIWeb.Controllers
 {
@@ -13,9 +14,12 @@ namespace LosMontenegrosAPIWeb.Controllers
     {
         private readonly ReservaRepository _reservaRepository;
 
-        public ReservaController(ReservaRepository reservaRepository)
+        private readonly HabitacionRepository _habitacionRepository;
+
+        public ReservaController(ReservaRepository reservaRepository, HabitacionRepository habitacionRepository)
         {
             _reservaRepository = reservaRepository;
+            _habitacionRepository = habitacionRepository;
         }
 
         // GET: api/Reserva
@@ -109,5 +113,31 @@ namespace LosMontenegrosAPIWeb.Controllers
             await _reservaRepository.DeleteReservaAsync(id);
             return NoContent();
         }
+
+
+        // POST (para que acepte el JSON): api/Reserva/HabitacionesDisponibles
+        [HttpPost("HabitacionesDisponibles")]
+        public async Task<ActionResult<List<Habitacion>>> GetHabitacionesDisponibles([FromBody] FiltroHabitaciones filtro)
+        {
+            if (filtro.FechaInicio >= filtro.FechaFin)
+            {
+                return BadRequest("La fecha de inicio debe ser anterior a la fecha de fin.");
+            }
+
+            var habitacionesDisponibles = await _habitacionRepository.ObtenerHabitacionesDisponiblesAsync(
+                filtro.FechaInicio,
+                filtro.FechaFin,
+                filtro.CapacidadMinima,
+                filtro.CategoriaId
+            );
+
+            if (habitacionesDisponibles == null || habitacionesDisponibles.Count == 0)
+            {
+                return NotFound("No hay habitaciones disponibles que cumplan con los filtros proporcionados.");
+            }
+
+            return Ok(habitacionesDisponibles);
+        }
+
     }
 }
