@@ -31,92 +31,96 @@
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue';
-  import temporadaService from '../services/temporadaService';
-  
-  const temporadas = ref([]);
-  const temporadaEditada = ref(null);
-  
-  const cargarTemporadas = async () => {
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import authService from '../services/authService';
+import temporadaService from '../services/temporadaService';
+
+const router = useRouter();
+const isAuthorized = ref(false); // Controla si el usuario tiene permisos
+const temporadas = ref([]);
+
+// Verificar si el usuario tiene el rol adecuado
+const verificarPermiso = async () => {
+  try {
+    const rolUsuario = await authService.obtenerRolDelUsuario();
+    if (rolUsuario === 1002) {
+      isAuthorized.value = true; // Permitir acceso
+      cargarTemporadas(); // Cargar temporadas solo si es admin
+    } else {
+      isAuthorized.value = false; // Denegar acceso
+      router.push('/'); // Redirigir al inicio
+    }
+  } catch (error) {
+    console.error('Error al verificar permisos:', error);
+    router.push('/'); // Redirigir al inicio en caso de error
+  }
+};
+
+// Cargar temporadas
+const cargarTemporadas = async () => {
   try {
     const response = await temporadaService.obtenerTemporadas();
-    console.log("Temporadas cargadas:", response); // Depuración
-
-    // Acceder al array dentro de `$values`
     const temporadasData = response.$values || [];
     temporadas.value = temporadasData.map(temporada => ({
       ...temporada,
-      fechaInicio: new Date(temporada.fechaIni).toISOString().split("T")[0], // Corregir propiedad
-      fechaFin: new Date(temporada.fechaFin).toISOString().split("T")[0], // Formato legible
-      tarifa: temporada.tarifa // Asegurarse de mantener la tarifa
+      fechaInicio: new Date(temporada.fechaIni).toISOString().split("T")[0],
+      fechaFin: new Date(temporada.fechaFin).toISOString().split("T")[0],
+      tarifa: temporada.tarifa,
     }));
   } catch (error) {
     console.error('Error al cargar temporadas:', error);
   }
 };
 
-
-
-  // Eliminar una temporada
-  const eliminarTemporadaHandler = async (id) => {
-    if (confirm('¿Estás seguro de que quieres eliminar esta temporada?')) {
-      try {
-        await temporadaService.eliminarTemporada(id);
-        await cargarTemporadas();
-      } catch (error) {
-        console.error('Error al eliminar temporada:', error);
-      }
+// Funciones de CRUD (sin cambios)
+const eliminarTemporadaHandler = async (id) => {
+  if (confirm('¿Estás seguro de que quieres eliminar esta temporada?')) {
+    try {
+      await temporadaService.eliminarTemporada(id);
+      await cargarTemporadas();
+    } catch (error) {
+      console.error('Error al eliminar temporada:', error);
     }
-  };
-  
-  // Función para crear una nueva temporada
-  const nuevaTemporada = () => {
-    // Pedir al usuario los datos de la nueva temporada
-    const nombre = prompt('Ingrese el nombre de la nueva temporada');
-    const fechaInicio = prompt('Ingrese la fecha de inicio (YYYY-MM-DD)');
-    const fechaFin = prompt('Ingrese la fecha de fin (YYYY-MM-DD)');
-    const tarifa = parseFloat(prompt('Ingrese la tarifa (por ejemplo, 1.5)'));
+  }
+};
 
-    // Validar que todos los campos tengan valores
-    if (nombre && fechaInicio && fechaFin && !isNaN(tarifa)) {
-      const nueva = { nombre, fechaInicio, fechaFin, tarifa };
+const nuevaTemporada = () => {
+  const nombre = prompt('Ingrese el nombre de la nueva temporada');
+  const fechaInicio = prompt('Ingrese la fecha de inicio (YYYY-MM-DD)');
+  const fechaFin = prompt('Ingrese la fecha de fin (YYYY-MM-DD)');
+  const tarifa = parseFloat(prompt('Ingrese la tarifa (por ejemplo, 1.5)'));
 
-      temporadaService.crearTemporada(nueva)
-        .then(() => cargarTemporadas())
-        .catch((error) => console.error('Error al crear temporada:', error));
-    } else {
-      alert('Por favor, ingrese todos los datos de la temporada correctamente');
-    }
-  };
+  if (nombre && fechaInicio && fechaFin && !isNaN(tarifa)) {
+    const nueva = { nombre, fechaInicio, fechaFin, tarifa };
 
-  
-  // Función para editar una temporada
-  const editarTemporada = (temporada) => {
-    const nombre = prompt('Editar nombre de la temporada', temporada.nombre);
-    const fechaInicio = prompt('Editar fecha de inicio (YYYY-MM-DD)', temporada.fechaIni);
-    const fechaFin = prompt('Editar fecha de fin ', temporada.fechaFin);
-    const tarifa = prompt('Editar tarifa (por ejemplo 1, 1.5)', temporada.tarifa);
+    temporadaService.crearTemporada(nueva)
+      .then(() => cargarTemporadas())
+      .catch((error) => console.error('Error al crear temporada:', error));
+  } else {
+    alert('Por favor, ingrese todos los datos de la temporada correctamente');
+  }
+};
 
-  
-    if (nombre && fechaInicio && fechaFin && tarifa) {
-      const temporadaActualizada = {
-        ...temporada,
-        nombre,
-        fechaIni,
-        fechaFin,
-        tarifa
-      };
-  
-      temporadaService.actualizarTemporada(temporada.id, temporadaActualizada)
-        .then(() => cargarTemporadas())
-        .catch((error) => console.error('Error al actualizar temporada:', error));
-    } else {
-      alert('Por favor, ingrese todos los datos de la temporada');
-    }
-  };
-  
-  onMounted(cargarTemporadas);
-  </script>
+const editarTemporada = (temporada) => {
+  const nombre = prompt('Editar nombre de la temporada', temporada.nombre);
+  const fechaInicio = prompt('Editar fecha de inicio (YYYY-MM-DD)', temporada.fechaInicio);
+  const fechaFin = prompt('Editar fecha de fin ', temporada.fechaFin);
+  const tarifa = parseFloat(prompt('Editar tarifa (por ejemplo, 1.5)', temporada.tarifa));
+
+  if (nombre && fechaInicio && fechaFin && tarifa) {
+    const temporadaActualizada = { ...temporada, nombre, fechaInicio, fechaFin, tarifa };
+    temporadaService.actualizarTemporada(temporada.id, temporadaActualizada)
+      .then(() => cargarTemporadas())
+      .catch((error) => console.error('Error al actualizar temporada:', error));
+  } else {
+    alert('Por favor, ingrese todos los datos de la temporada');
+  }
+};
+
+// Comprobar permisos al montar el componente
+onMounted(verificarPermiso);
+</script>
   
   <style scoped>
   .gestion-temporadas {
