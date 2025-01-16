@@ -46,7 +46,7 @@ const temporadas = ref([]);
 const verificarPermiso = async () => {
   try {
     const rolUsuario = await authService.obtenerRolDelUsuario();
-    if (rolUsuario === 1002) {
+    if (rolUsuario === "1002") {
       isAuthorized.value = true; // Permitir acceso
       cargarTemporadas(); // Cargar temporadas solo si es admin
     } else {
