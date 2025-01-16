@@ -103,4 +103,29 @@ export default {
       throw new Error('Error al eliminar reserva');
     }
   },
+  
+  // Método para obtener las habitaciones disponibles
+  async obtenerHabitacionesDisponibles(fechaInicio: string, fechaFin: string, capacidadMinima: number | null, categoriaId: number | null) {
+    const requestBody = {
+      fechaInicio: fechaInicio,
+      fechaFin: fechaFin,
+      capacidadMinima: capacidadMinima,
+      categoriaId: categoriaId
+    };
+
+    const response = await fetch(`${API_URL}/HabitacionesDisponibles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener habitaciones disponibles');
+    }
+
+    return await response.json();
+  },
+  
 };

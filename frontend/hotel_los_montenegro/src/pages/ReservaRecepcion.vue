@@ -17,7 +17,7 @@
             <tr v-for="reserva in reservas" :key="reserva.id" class="reserva-item">
               <td>{{ reserva.id }}</td>
               <td>{{ reserva.usuario.nombre }}</td>
-              <td><button @click="confirmarCancelar(reserva.id)">Cancelar</button></td>
+              <td><button @click="confirmarCancelar(reserva.id)" class="btn-servicios">Cancelar</button></td>
             </tr>
           </tbody>
         </table>
@@ -39,8 +39,8 @@
               <td>{{ habitacion.numero }}</td>
               <td>{{ habitacion.bloqueada ? 'Bloqueada' : 'Disponible' }}</td>
               <td>
-                <button v-if="!habitacion.bloqueada" @click="bloquearHabitacion(habitacion.id)">Bloquear</button>
-                <button v-else @click="desbloquearHabitacion(habitacion.id)">Desbloquear</button>
+                <button v-if="!habitacion.bloqueada" @click="bloquearHabitacion(habitacion.id)" class="btn-servicios">Bloquear</button>
+                <button v-else @click="desbloquearHabitacion(habitacion.id)" class="btn-servicios">Desbloquear</button>
               </td>
             </tr>
           </tbody>
@@ -84,10 +84,17 @@
           <label for="tipoHabitacion">Tipo de Habitación</label>
           <input id="tipoHabitacion" v-model="formulario.tipoHabitacion" type="text" />
         </div>
-        <button type="submit">Reservar</button>
+        <div>
+          <!-- Botón para abrir modal de selección de servicios -->
+          <button type="button" @click="abrirModalServicios" class="btn-servicios">Servicios a elegir</button>
+        </div>
+        <div>
+          <button type="button" @click="abrirModalHabitaciones" class="btn-servicios">Buscar Habitaciones</button>
+        </div>
+        <div>
+          <button type="submit" class="btn-servicios">Reservar</button>
+        </div>
       </form>
-      <!-- Botón para abrir modal de selección de servicios -->
-      <button @click="abrirModalServicios" class="btn-servicios">Servicios a elegir</button>
     </div>
   </div>
 
@@ -117,6 +124,24 @@
       <button @click="continuarConReserva" :disabled="cargandoServicios">Continuar con la reserva</button>
     </div>
   </div>
+
+  <!-- Modal de habitaciones disponibles -->
+  <div v-if="mostrarModalHabitaciones" class="modal-overlay">
+    <div class="modal">
+      <button class="cerrar-modal" @click="cerrarModalHabitaciones">X</button>
+      <h3>Habitaciones Disponibles</h3>
+      <ul class="lista-habitaciones">
+        <li v-for="habitacion in habitacionesDisponibles" :key="habitacion.id" class="habitacion-item">
+          <div>
+            <strong>{{ habitacion.numero }}</strong>
+            <p>Capacidad: {{ habitacion.capacidad }}</p>
+            <p>Precio por día: {{ habitacion.precioBase }}€</p>
+          </div>
+        <button @click="seleccionarHabitacion(habitacion)" class="btn-seleccionar">Seleccionar</button>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -144,6 +169,11 @@ const reservaIdModal = ref(null);
 const mostrarModalServicios = ref(false);
 const servicios = ref([]);
 const cargandoServicios = ref(false);
+const mostrarModalHabitaciones = ref(false);
+const habitacionesDisponibles = ref([]);
+const habitacionSeleccionada = ref(null);
+
+
 
 // Cargar los datos de reservas, habitaciones y servicios
 const cargarDatos = async () => {
@@ -178,7 +208,56 @@ const cerrarModalServicios = () => {
   mostrarModalServicios.value = false;
 };
 
-// Continuar con la reserva (siguiente paso)
+// Función para abrir el modal de habitaciones disponibles
+const abrirModalHabitaciones = () => {
+  try {
+    // Llamada al servicio para obtener las habitaciones disponibles
+    buscarHabitaciones(); // Esta función ahora debería obtener las habitaciones disponibles
+
+    // Abre el modal 
+    mostrarModalHabitaciones.value = true;
+
+  } catch (error) {
+    console.error('Error al abrir el modal de habitaciones:', error);
+  }
+};
+
+// Cerrar modal de servicios
+const cerrarModalHabitaciones = () => {
+  mostrarModalHabitaciones.value = false;
+};
+// Función para buscar habitaciones disponibles
+const buscarHabitaciones = async () => {
+  try {
+    // Formateamos las fechas al formato ISO
+    const fechaEntradaFormateada = new Date(formulario.value.fechaEntrada).toISOString();
+    const fechaSalidaFormateada = new Date(formulario.value.fechaSalida).toISOString();
+
+    // Llamamos al servicio con las fechas formateadas y parámetros adicionales
+    const habitacionesDisponiblesData = await reservaService.obtenerHabitacionesDisponibles(
+      fechaEntradaFormateada,
+      fechaSalidaFormateada,
+      formulario.value.capacidadMinima || null, // Si no se especifica, pasamos null
+      formulario.value.tipoHabitacion || null // Si no se especifica, pasamos null
+    );
+
+    // Guardamos las habitaciones obtenidas
+    habitacionesDisponibles.value = habitacionesDisponiblesData.$values;
+    console.log(habitacionesDisponibles.value)
+  } catch (error) {
+    alert('Debe introducir los datos necesarios para poder buscar la habitacion');
+  }
+};
+
+// Función para seleccionar una habitación
+const seleccionarHabitacion = (habitacion: any) => {
+  habitacionSeleccionada.value = habitacion;
+  alert(`Has seleccionado la habitación: ${habitacion.numero}`);
+  console.log(habitacion)
+  mostrarModalHabitaciones.value = false; // Cierra el modal después de seleccionar
+};
+
+// Continuar con la reserva
 const continuarConReserva = () => {
   const serviciosSeleccionados = servicios.value.filter((s) => s.seleccionado);
   console.log('Servicios seleccionados:', serviciosSeleccionados);
@@ -369,4 +448,38 @@ input {
 .servicio-item input {
   margin-right: 10px;
 }
+
+.lista-habitaciones {
+  list-style: none;
+  padding: 0;
+}
+
+.habitacion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.habitacion-item div {
+  max-width: 70%;
+}
+
+.btn-seleccionar {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-seleccionar:hover {
+  background-color: #0056b3;
+}
+
 </style>
