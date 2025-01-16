@@ -11,6 +11,10 @@ import listado from './pages/Lista_habs.vue';
 import Webmaster from './pages/Webmaster.vue';
 import GestionHabitaciones from './components/GestionHabitaciones.vue';
 import GestionTemporada from './components/GestionarTemporada.vue';
+
+import Pago from './pages/Pago.vue';
+
+
 import GestionUsuarios from './components/GestionUsuarios.vue';
 import Informes from './components/Informes.vue';
 import WelcomeWebmaster from './components/WelcomeWebmaster.vue';
@@ -22,6 +26,7 @@ const routes = [
   { path: '/', component: Home },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
+  { path: '/pago', name: 'Pago', component: Pago,},
   { path: '/about', component: About},
   { path: '/detalles', component: Detail},
   { path: '/habitaciones', component: Habitacionesdisp},

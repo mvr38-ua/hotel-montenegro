@@ -57,6 +57,21 @@ export default {
     }
   
     return await response.json();
-  }
+  },
+  obtenerRolDelUsuario() {
+    const token = localStorage.getItem('token'); // Recuperar el token del almacenamiento
+    if (!token) {
+      throw new Error('No se encontró un token, el usuario no está autenticado');
+    }
+
+    // Decodificar el payload del token (asumiendo que es un JWT)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.tipo_usuario_id; // Suponiendo que el rol está en la propiedad "role"
+  },
+
+  // Opcional: Método para cerrar sesión
+  logout() {
+    localStorage.removeItem('token'); // Eliminar el token
+  },
   
 };
