@@ -72,6 +72,32 @@ export default {
       throw new Error('Error al obtener categorías');
     }
     return await response.json();
-  }
+  },
+
+  async bloquearHabitacion(id: string) {
+    const response = await fetch(`${API_URL}/bloquear/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al bloquear habitación');
+    }
+  },
+
+  async desbloquearHabitacion(id: string) {
+    const response = await fetch(`${API_URL}/desbloquear/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al desbloquear habitación');
+    }
+  },
   
 };
