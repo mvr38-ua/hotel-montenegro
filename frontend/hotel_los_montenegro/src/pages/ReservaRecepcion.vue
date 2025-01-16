@@ -51,7 +51,7 @@
     <!-- Sección Derecha: Formulario -->
     <div class="formulario-section caja-gris">
       <h2>Formulario de Reservas</h2>
-      <form @submit.prevent="crearReserva">
+      <form @submit.prevent="abrirModalServicios">
         <div class="form-group">
           <label for="nombre">Nombre</label>
           <input id="nombre" v-model="formulario.nombre" type="text" required />
@@ -86,6 +86,8 @@
         </div>
         <button type="submit">Reservar</button>
       </form>
+      <!-- Botón para abrir modal de selección de servicios -->
+      <button @click="abrirModalServicios" class="btn-servicios">Servicios a elegir</button>
     </div>
   </div>
 
@@ -94,16 +96,34 @@
     <div class="modal">
       <p>¿Estás seguro de que deseas cancelar esta reserva?</p>
       <button @click="cancelarReserva(reservaIdModal)">Confirmar</button>
-      <button @click="cerrarModal">Cerrar</button>
+      <button @click="cerrarModal" class="cerrar-modal">X</button>
+    </div>
+  </div>
+
+  <!-- Modal de Servicios -->
+  <div v-if="mostrarModalServicios" class="modal-overlay">
+    <div class="modal">
+      <button class="cerrar-modal" @click="cerrarModalServicios">X</button>
+      <h3>Elija nuestros servicios disponibles...</h3>
+      <div v-if="cargandoServicios">Cargando servicios...</div>
+      <div v-else class="servicios-list">
+        <div v-for="(servicio, index) in servicios" :key="index" class="servicio-item">
+          <label>
+            <input type="checkbox" v-model="servicio.seleccionado" />
+            <span>{{ servicio.nombre }} - {{ servicio.precioServicio }}€</span>
+          </label>
+        </div>
+      </div>
+      <button @click="continuarConReserva" :disabled="cargandoServicios">Continuar con la reserva</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import reservaService from '../services/reservasService';
 import habitacionService from '../services/habitacionesService';
-import { onMounted } from 'vue';
+import serviciosService from '../services/serviciosService';
 import authService from '../services/authService';
 import { useRouter } from 'vue-router';
 
@@ -121,21 +141,50 @@ const formulario = ref({
 });
 const mostrarModal = ref(false);
 const reservaIdModal = ref(null);
+const mostrarModalServicios = ref(false);
+const servicios = ref([]);
+const cargandoServicios = ref(false);
 
-// Carga inicial de datos
+// Cargar los datos de reservas, habitaciones y servicios
 const cargarDatos = async () => {
   try {
+    // Cargar reservas
     const response1 = await reservaService.obtenerReservas();
     reservas.value = response1.$values;
 
+    // Cargar habitaciones
     const response2 = await habitacionService.obtenerHabitaciones();
     habitaciones.value = response2.$values;
 
+    // Cargar servicios
+    const serviciosCargados = await serviciosService.obtenerServicios();
+    servicios.value = serviciosCargados.$values;
+
     console.log('Reservas:', reservas.value);
     console.log('Habitaciones:', habitaciones.value);
+    console.log('Servicios:', servicios.value);
   } catch (error) {
     console.error('Error al cargar los datos:', error);
   }
+};
+
+// Mostrar modal de servicios
+const abrirModalServicios = async () => {
+  mostrarModalServicios.value = true;
+};
+
+// Cerrar modal de servicios
+const cerrarModalServicios = () => {
+  mostrarModalServicios.value = false;
+};
+
+// Continuar con la reserva (siguiente paso)
+const continuarConReserva = () => {
+  const serviciosSeleccionados = servicios.value.filter((s) => s.seleccionado);
+  console.log('Servicios seleccionados:', serviciosSeleccionados);
+
+  // Aquí puedes hacer algo más, como redirigir a un resumen de reserva
+  cerrarModalServicios();
 };
 
 // Confirmar cancelación
@@ -215,62 +264,42 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Contenedor principal con dos columnas iguales */
+/* Estilos previos no modificados */
+
 .recepcion-container {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
   padding: 20px;
 }
 
-/* Estilo para las cajas grises */
 .caja-gris {
-  background-color: #f0f0f0; /* Fondo gris claro */
+  background-color: #f0f0f0;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Márgenes entre las secciones */
 .listados-section,
 .formulario-section {
   margin: 0 auto;
 }
 
-/* Tabla */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-th,
-td {
-  padding: 10px;
-  text-align: left;
-  border: 1px solid #ddd;
-}
-
-th {
-  background-color: #e0e0e0;
-}
-
-/* Botones */
-button {
-  padding: 0.5em 1em;
-  margin: 0.2em;
-  background-color: #007bff;
+/* Botón de Servicios a elegir */
+.btn-servicios {
+  background-color: #28a745;
   color: white;
-  border: none;
+  padding: 0.5em 1em;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 20px;
 }
 
-button:hover {
-  background-color: #0056b3;
+.btn-servicios:hover {
+  background-color: #218838;
 }
 
-/* Modal */
+/* Modales */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -285,15 +314,36 @@ button:hover {
 
 .modal {
   background: white;
-  padding: 1rem;
-  border-radius: 5px;
-  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 80%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Esto permite distribuir el contenido */
+  height: auto;              /* Asegura que el modal tenga el tamaño adecuado */
+  position: relative;        /* Para posicionar correctamente el botón de cerrar */
+}
+.cerrar-modal {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgb(126, 17, 17);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-/* Formulario */
-form {
-  display: grid;
-  gap: 1rem;
+.modal button:last-child {
+  margin-top: auto; /* Empuja el botón de continuar hacia abajo */
+}
+
+.cerrar-modal:hover {
+  background-color: rgb(184, 13, 13);
 }
 
 input {
@@ -301,5 +351,22 @@ input {
   border: 1px solid #ddd;
   border-radius: 5px;
   width: 100%;
+}
+
+/* Lista de servicios */
+.servicios-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.servicio-item label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.servicio-item input {
+  margin-right: 10px;
 }
 </style>
