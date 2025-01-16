@@ -8,7 +8,9 @@ import About from './pages/About.vue';
 import Detail from './pages/Detalles.vue';
 import Habitacionesdisp from './pages/Habitaciones.vue';
 import listado from './pages/Lista_habs.vue';
+import Servicios from './pages/Servicios.vue';
 import Webmaster from './pages/Webmaster.vue';
+import Profile from './pages/perfil.vue';
 import GestionHabitaciones from './components/GestionHabitaciones.vue';
 import GestionTemporada from './components/GestionarTemporada.vue';
 
@@ -28,9 +30,11 @@ const routes = [
   { path: '/register', component: Register },
   { path: '/pago', name: 'Pago', component: Pago,},
   { path: '/about', component: About},
+  { path: '/servicios', component: Servicios },
   { path: '/detalles', component: Detail},
   { path: '/habitaciones', component: Habitacionesdisp},
   { path: '/listado', component: listado},
+  { path: '/profile', component: Profile },
   {
     path: '/webmaster',
     component: Webmaster,

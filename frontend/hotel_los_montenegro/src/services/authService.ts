@@ -69,10 +69,18 @@ export default {
     console.log('Payload del token:', payload);
     return payload.TipoUsuario; // Suponiendo que el rol está en la propiedad "role"
   },
-
   // Opcional: Método para cerrar sesión
   logout() {
     localStorage.removeItem('token'); // Eliminar el token
   },
-  
+  obtenerUsuarioDelToken() {
+    const token = localStorage.getItem('token'); // Retrieve the token from storage
+    if (!token) {
+      throw new Error('No se encontró un token, el usuario no está autenticado');
+    }
+
+    // Decode the token payload (assuming it's a JWT)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.nameid; // Return only the user ID
+  }
 };
