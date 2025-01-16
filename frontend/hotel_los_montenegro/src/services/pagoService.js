@@ -8,7 +8,7 @@ export default {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': API_KEY, // Incluye tu API Key en el header
+        'x-api-key': API_KEY,
       },
       body: JSON.stringify(pagoData),
     });

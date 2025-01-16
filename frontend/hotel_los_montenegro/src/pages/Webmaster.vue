@@ -21,12 +21,16 @@ const isAuthorized = ref(false);
 const router = useRouter(); // Acceder al router
 
 const verificarPermiso = async () => {
+  console.log('Verificando permisos...');
   try {
     const rolUsuario = await authService.obtenerRolDelUsuario();
-    if (rolUsuario === 1002) {
+    console.log('Rol del usuario:', rolUsuario);
+    if (rolUsuario === "1002") {
       isAuthorized.value = true; // Permitir acceso
+      console.log('Tienes permiso para acceder a esta página.');
     } else {
       isAuthorized.value = false; // Denegar acceso
+      console.log('No tienes permiso para acceder a esta página.');
       router.push('/'); // Redirigir al inicio
     }
   } catch (error) {
@@ -37,6 +41,7 @@ const verificarPermiso = async () => {
 
 // Usar la función verificarPermiso cuando el componente se monta
 onMounted(verificarPermiso);
+
 </script>
 
 <style>

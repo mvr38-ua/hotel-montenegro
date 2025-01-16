@@ -66,7 +66,8 @@ export default {
 
     // Decodificar el payload del token (asumiendo que es un JWT)
     const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.tipo_usuario_id; // Suponiendo que el rol está en la propiedad "role"
+    console.log('Payload del token:', payload);
+    return payload.TipoUsuario; // Suponiendo que el rol está en la propiedad "role"
   },
 
   // Opcional: Método para cerrar sesión

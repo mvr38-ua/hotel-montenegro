@@ -41,20 +41,31 @@ const login = async () => {
     aciertoMessage.value = 'Login correcto.';
 
     // Decodificar el token JWT
-    const decodedToken: { TipoUsuario: string } = jwtDecode(token);
+    const decodedToken: { TipoUsuario: int } = jwtDecode(token);
+    console.log('Tipo de Usuario antes de conversión:', decodedToken.TipoUsuario);
+
+    // Convertir a número si es necesario
+    const tipoUsuario = Number(decodedToken.TipoUsuario);
+    console.log('Tipo de Usuario después de conversión:', tipoUsuario);
 
     // Redirigir basado en el tipo de usuario
-    switch (decodedToken.TipoUsuario) {
-      case '1': // Usuario normal
+    switch (tipoUsuario) {
+      case 1: // Usuario normal
+        console.log('USUARIO NORMAL');
         window.location.href = '/';
         break;
-      case '2': // Recepcionista
+      case 2: // Recepcionista
         window.location.href = '/recepcionista';
         break;
-      case '1002': // Administrador
+      case 1002: // Administrador
+        console.log('ADMINISTRADOR');
+        window.location.href = '/webmaster';
+        break;
+      case 3:
         window.location.href = '/webmaster';
         break;
       default:
+        console.log('Tipo de Usuario no reconocido:', tipoUsuario);
         window.location.href = '/';
         break;
     }
@@ -62,6 +73,9 @@ const login = async () => {
     errorMessage.value = 'Email o password incorrecto.';
   }
 };
+
+
+
 </script>
 
 <style scoped>
