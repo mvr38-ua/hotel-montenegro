@@ -11,7 +11,7 @@ import listado from './pages/Lista_habs.vue';
 import Webmaster from './pages/Webmaster.vue';
 import GestionHabitaciones from './components/GestionHabitaciones.vue';
 import GestionTemporada from './components/GestionarTemporada.vue';
-import ReservaRecepcion from './components/ReservaRecepcion.vue';
+import ReservaRecepcion from './pages/ReservaRecepcion.vue';
 
 import Pago from './pages/Pago.vue';
 

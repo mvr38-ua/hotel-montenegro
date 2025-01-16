@@ -14,7 +14,7 @@
         <tbody>
           <tr v-for="reserva in reservas" :key="reserva.id" class="reserva-item">
             <td>{{ reserva.id }}</td>
-            <td>{{ reserva.usuarioNombre}}</td>
+            <td>{{ reserva.usuario.nombre}}</td>
             <td><button @click="confirmarCancelar(reserva.id)">Cancelar</button></td>
           </tr>
         </tbody>
@@ -85,6 +85,8 @@ import { ref } from 'vue';
 import reservaService from '../services/reservasService';
 import habitacionService from '../services/habitacionesService';
 import { onMounted } from 'vue';
+import authService from '../services/authService';
+import { useRouter } from 'vue-router';
 
 const reservas = ref([]);
 const habitaciones = ref([]);
@@ -158,9 +160,35 @@ const crearReserva = async () => {
   Object.keys(formulario.value).forEach((key) => (formulario.value[key] = ''));
 };
 
+// Variables reactivas
+const isAuthorized = ref(false);
+const router = useRouter(); // Acceder al router
+
+const verificarPermiso = async () => {
+  console.log('Verificando permisos...');
+  try {
+    const rolUsuario = await authService.obtenerRolDelUsuario();
+    console.log('Rol del usuario:', rolUsuario);
+    if (rolUsuario === "3") {       // CAMBIAR AL ROL DE RECEPCIONISTA SI CAMBIA EN TU DB
+      isAuthorized.value = true; // Permitir acceso
+      console.log('Tienes permiso para acceder a esta página.');
+    } else {
+      isAuthorized.value = false; // Denegar acceso
+      console.log('No tienes permiso para acceder a esta página.');
+      router.push('/'); // Redirigir al inicio
+    }
+  } catch (error) {
+    console.error('Error al verificar permisos:', error);
+    router.push('/'); // Redirigir al inicio en caso de error
+  }
+};
+
 // Inicialización
 onMounted(() => {
   cargarDatos();
+
+  // Usar la función verificarPermiso cuando el componente se monta
+  verificarPermiso();
 });
 
 </script>
