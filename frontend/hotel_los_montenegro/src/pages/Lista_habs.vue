@@ -10,6 +10,12 @@
               <h5 class="card-title">Habitación {{ getCategoriaNombre(habitacion.categoriaId) }}</h5>
               <p class="card-text">{{ habitacion.descripcion }}</p>
               <p class="card-text"><strong>Precio:</strong> {{ habitacion.precioBase }} €/noche</p>
+              <div class="amenities">
+                <i class="fas fa-wifi" v-if="habitacion.wifi"></i>
+                <i class="fas fa-bath" v-if="habitacion.bano"></i>
+                <!-- Add more icons as needed -->
+              </div>
+              <p class="card-description">{{ getCategoriaDescripcion(habitacion.categoriaId) }}</p>
             </div>
           </div>
         </div>
@@ -70,12 +76,26 @@ export default {
         default:
           return 'Desconocida';
       }
+    },
+    getCategoriaDescripcion(categoriaId) {
+      switch (categoriaId) {
+        case 1:
+          return 'Habitación Economy: Estas habitaciones tienen balcón y sus ventanas ofrecen vistas a un pequeño jardín interior. Disponen de dos camas de 1.05m o una cama de 2x2m. Algunos baños cuentan con ducha y otros con bañera.';
+        case 2:
+          return 'Habitación Estandar: Estas habitaciones ofrecen vistas al jardín principal y cuentan con un balcón privado. Disponen de una cama de 2x2m y un baño con bañera.';
+        case 3:
+          return 'Habitación Deluxe: Estas habitaciones ofrecen vistas panorámicas al mar y cuentan con un balcón privado. Disponen de una cama de 2x2m, una sala de estar y un baño con bañera de hidromasaje.';
+        default:
+          return 'Descripción no disponible.';
+      }
     }
   }
 };
 </script>
 
 <style scoped>
+@import '@fortawesome/fontawesome-free/css/all.css';
+
 .card {
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -102,5 +122,20 @@ export default {
   height: auto;
   object-fit: cover;
   margin-right: 20px;
+}
+
+.amenities {
+  margin-top: 10px;
+}
+
+.amenities i {
+  margin-right: 10px;
+  font-size: 1.5rem;
+  color: #555;
+}
+
+.card-description {
+  margin-top: 10px;
+  font-style: italic;
 }
 </style>
