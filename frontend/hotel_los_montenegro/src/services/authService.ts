@@ -74,13 +74,20 @@ export default {
     localStorage.removeItem('token'); // Eliminar el token
   },
   obtenerUsuarioDelToken() {
-    const token = localStorage.getItem('token'); // Retrieve the token from storage
+    const token = localStorage.getItem('token'); // Recuperar el token del almacenamiento
     if (!token) {
       throw new Error('No se encontró un token, el usuario no está autenticado');
     }
-
-    // Decode the token payload (assuming it's a JWT)
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.nameid; // Return only the user ID
+  
+    try {
+      // Decodificar el payload del token (asumiendo que es un JWT)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      // Extraer y devolver el ID del usuario
+      return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+    } catch (error) {
+      console.error('Error al decodificar el token:', error);
+      throw new Error('Token no válido');
+    }
   }
+  
 };
