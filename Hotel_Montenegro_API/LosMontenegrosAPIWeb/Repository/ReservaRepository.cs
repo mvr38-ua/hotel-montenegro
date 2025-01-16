@@ -42,6 +42,8 @@ namespace LosMontenegrosAPIWeb.Repositories
                  FechaInicio = r.FechaInicio,
                  FechaFinal = r.FechaFinal,
                  PrecioTotal = r.PrecioTotal,
+                 UsuarioId = r.UsuarioId,
+                 HabitacionId = r.HabitacionId, 
                  Usuario = new Usuario
                  {
                      Id = r.Usuario.Id,
