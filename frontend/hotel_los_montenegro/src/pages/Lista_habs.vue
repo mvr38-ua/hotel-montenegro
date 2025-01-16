@@ -18,6 +18,7 @@
               <p class="card-description">{{ getCategoriaDescripcion(habitacion.categoriaId) }}</p>
             </div>
           </div>
+          <hr class="separator">
         </div>
       </div>
     </div>
@@ -94,11 +95,8 @@ export default {
 </script>
 
 <style scoped>
-@import '@fortawesome/fontawesome-free/css/all.css';
-
 .card {
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: none;
   display: flex;
   flex-direction: row;
 }
@@ -137,5 +135,11 @@ export default {
 .card-description {
   margin-top: 10px;
   font-style: italic;
+}
+
+.separator {
+  border: none;
+  border-top: 1px solid #d3d3d3;
+  margin: 20px 0;
 }
 </style>
