@@ -13,7 +13,7 @@
                 <h5 class="card-title">Habitación {{ getCategoriaNombre(habitacion.categoriaId) }}</h5>
                 <p class="card-text"><strong>Fechas:</strong> {{ formatDate(fechaInicio) }} - {{ formatDate(fechaFinal) }}</p>
                 <p class="card-text"><strong>Precio desde:</strong> {{ habitacion.precioBase }} €/noche</p>
-                <button class="btn btn-custom">Reservar</button>
+                <button class="btn btn-custom" @click="reservar(habitacion)">Reservar</button>
               </div>
             </div>
           </div>
@@ -28,8 +28,9 @@
 
 <script>
 import axios from 'axios';
-import categoria1 from '../assets/economy.png';
-import categoria2 from '../assets/estandar.png';
+import { useRouter } from 'vue-router';
+import categoria1 from '../assets/estandar.png';
+import categoria2 from '../assets/economy.png';
 import categoria3 from '../assets/deluxe.png';
 
 export default {
@@ -57,7 +58,18 @@ export default {
   created() {
     const disponibles = this.$route.query.disponibles;
     if (disponibles) {
-      this.habitaciones = JSON.parse(disponibles);
+      try {
+        const parsedDisponibles = JSON.parse(disponibles);
+        if (Array.isArray(parsedDisponibles)) {
+          this.habitaciones = parsedDisponibles;
+        } else {
+          console.error('Parsed disponibles is not an array:', parsedDisponibles);
+          this.habitaciones = [];
+        }
+      } catch (e) {
+        console.error('Error parsing habitaciones:', e);
+        this.habitaciones = [];
+      }
       this.fechaInicio = this.$route.query.fechaInicio;
       this.fechaFinal = this.$route.query.fechaFinal;
     }
@@ -101,6 +113,16 @@ export default {
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const year = d.getFullYear();
       return `${day}/${month}/${year}`;
+    },
+    reservar(habitacion) {
+      this.$router.push({
+        path: '/detalles',
+        query: {
+          habitacion: JSON.stringify(habitacion),
+          fechaInicio: this.fechaInicio,
+          fechaFinal: this.fechaFinal
+        }
+      });
     }
   }
 };
@@ -132,7 +154,7 @@ export default {
 }
 
 .btn-custom {
-  background-color: gray;
+  background-color: lightgray;
   color: black;
   border: 1px solid black;
   border-radius: 5px;

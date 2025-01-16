@@ -16,6 +16,7 @@
           <button class="btn btn-elegant w-100" @click="buscarHabitaciones">Buscar</button>
         </div>
       </div>
+      <div v-if="errorMessage" class="text-danger mt-2">{{ errorMessage }}</div>
     </div>
 
     <!-- Imagen grande -->
@@ -80,6 +81,7 @@ export default {
       fechaInicio: '',
       fechaFinal: '',
       numPersonas: 1,
+      errorMessage: '' // Add a data property to store error messages
     };
   },
   setup() {
@@ -89,41 +91,28 @@ export default {
   methods: {
     async buscarHabitaciones() {
       try {
-        const reservasResponse = await axios.get('http://localhost:5288/api/Reserva');
-        const habitacionesResponse = await axios.get('http://localhost:5288/api/Habitaciones');
+        const filtro = {
+          fechaInicio: new Date(this.fechaInicio).toISOString(),
+          fechaFin: new Date(this.fechaFinal).toISOString(),
+          capacidadMinima: this.numPersonas,
+          categoriaId: null // Puedes ajustar esto según sea necesario
+        };
 
-        const reservas = reservasResponse.data.$values;
-        const habitaciones = habitacionesResponse.data.$values;
+        const response = await axios.post('http://localhost:5288/api/Reserva/HabitacionesDisponibles', filtro);
 
-        if (Array.isArray(reservas) && Array.isArray(habitaciones)) {
-          const habitacionesDisponibles = habitaciones.filter(habitacion => {
-            return habitacion.capacidad >= this.numPersonas && !reservas.some(reserva => {
-              const reservaInicio = new Date(reserva.fechaInicio);
-              const reservaFinal = new Date(reserva.fechaFinal);
-              const fechaInicio = new Date(this.fechaInicio);
-              const fechaFinal = new Date(this.fechaFinal);
+        const habitacionesDisponibles = response.data.$values;
 
-              return reserva.habitacionId === habitacion.id &&
-                  ((fechaInicio >= reservaInicio && fechaInicio <= reservaFinal) ||
-                      (fechaFinal >= reservaInicio && fechaFinal <= reservaFinal) ||
-                      (reservaInicio >= fechaInicio && reservaInicio <= fechaFinal) ||
-                      (reservaFinal >= fechaInicio && reservaFinal <= fechaFinal));
-            });
-          });
-
-          this.router.push({
-            path: '/habitaciones',
-            query: {
-              disponibles: JSON.stringify(habitacionesDisponibles),
-              fechaInicio: this.fechaInicio,
-              fechaFinal: this.fechaFinal
-            }
-          });
-        } else {
-          console.error('Error: reservas or habitaciones is not an array');
-        }
+        this.router.push({
+          path: '/habitaciones',
+          query: {
+            disponibles: JSON.stringify(habitacionesDisponibles),
+            fechaInicio: this.fechaInicio,
+            fechaFinal: this.fechaFinal
+          }
+        });
       } catch (error) {
         console.error('Error fetching data:', error);
+        this.errorMessage = error.response?.data || 'An error occurred while fetching available rooms. Please try again later.';
       }
     }
   }
@@ -168,6 +157,10 @@ export default {
 .final-text {
   text-align: center;
   margin-top: 20px;
+}
+
+.text-danger {
+  color: red;
 }
 
 @media (max-width: 768px) {
