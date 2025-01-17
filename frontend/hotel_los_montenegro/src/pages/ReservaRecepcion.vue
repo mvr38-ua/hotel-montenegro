@@ -65,6 +65,10 @@
           <input id="correo" v-model="formulario.correo" type="email" required />
         </div>
         <div class="form-group">
+          <label for="dni">DNI</label>
+          <input id="dni" v-model="formulario.dni" type="text" required />
+        </div>
+        <div class="form-group">
           <label for="movil">Móvil</label>
           <input id="movil" v-model="formulario.movil" type="tel" required />
         </div>
@@ -160,6 +164,7 @@ const formulario = ref({
   nombre: '',
   apellidos: '',
   correo: '',
+  dni: '',
   movil: '',
   fechaEntrada: '',
   fechaSalida: '',
@@ -299,27 +304,6 @@ const desbloquearHabitacion = async (id) => {
   cargarDatos();
 };
 
-// Crear reserva
-const crearReserva = async () => {
-  try {
-    await reservaService.crearReserva(formulario.value);
-    alert('Reserva creada exitosamente');
-    cargarDatos();
-    formulario.value = {
-      nombre: '',
-      apellidos: '',
-      correo: '',
-      movil: '',
-      fechaEntrada: '',
-      fechaSalida: '',
-      capacidadMinima: '',
-      tipoHabitacion: '',
-    };
-  } catch (error) {
-    console.error('Error al crear la reserva:', error);
-  }
-};
-
 const isAuthorized = ref(false);
 const router = useRouter();
 
@@ -339,9 +323,9 @@ const verificarPermiso = async () => {
 
 const irAPaginaResumen = () => {
   // Validar campos obligatorios del formulario
-  const { nombre, apellidos, correo, movil, fechaEntrada, fechaSalida } = formulario.value;
+  const { nombre, apellidos, correo, dni, movil, fechaEntrada, fechaSalida } = formulario.value;
 
-  if (!nombre || !apellidos || !correo || !movil || !fechaEntrada || !fechaSalida) {
+  if (!nombre || !apellidos || !correo || !dni || !movil || !fechaEntrada || !fechaSalida) {
     alert('Por favor, completa todos los campos obligatorios del formulario.');
     return;
   }
