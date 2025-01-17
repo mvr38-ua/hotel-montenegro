@@ -152,12 +152,13 @@
         // Limpiar reserva global y redirigir
         limpiarReserva();
         alert('Reserva realizada con éxito');
-        router.push('/pago');
+        router.push({ name: 'pago', query: { precioTotal: precioTotal.value } });  
         
     } catch (error) {
         console.error('Error al realizar la reserva:', error);
         alert('Hubo un problema al realizar la reserva');
     }
+
 };
 
   </script>

@@ -326,7 +326,7 @@ const router = useRouter();
 const verificarPermiso = async () => {
   try {
     const rolUsuario = await authService.obtenerRolDelUsuario();
-    if (rolUsuario === "3") {
+    if (rolUsuario === "2") {
       isAuthorized.value = true;
     } else {
       router.push('/');
