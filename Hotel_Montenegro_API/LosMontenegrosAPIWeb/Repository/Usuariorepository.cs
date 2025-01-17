@@ -76,5 +76,11 @@ namespace LosMontenegrosAPIWeb.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        // Obtener usuario por el email
+        public async Task<Usuario?> GetUsuarioByEmailAsync(string email)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+        }
     }
 }

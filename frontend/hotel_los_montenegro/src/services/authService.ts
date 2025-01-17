@@ -134,5 +134,23 @@ export default {
     }
   },
   
+  async existeUsuario(email: string) {
+    const response = await fetch(`${API_URL}/existeUsuario/${email}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { existe: false }; // Usuario no encontrado
+      }
+      throw new Error('Error verificando el usuario');
+    }
+
+    const data = await response.json();
+    return data; // { existe: true, id: userId } o { existe: false }
+  },
   
 };

@@ -46,6 +46,7 @@
   import { reservaGlobal, limpiarReserva } from '../store/reservaGlobal';
   import { useRouter } from 'vue-router';
   import { computed } from 'vue';
+  import authService from '../services/authService';
   import reservaService from '../services/reservasService';
   
   // Accede a los datos globales
@@ -82,9 +83,54 @@
   
   // Función para proceder con el pago
   const router = useRouter();
+  const manejarUsuario = async () => {
+  try {
+    var usuarioId;
+
+    // Verificar si el usuario ya existe
+    const usuarioExistente = await authService.existeUsuario(formulario.correo);
+    console.log(usuarioExistente);
+
+    if (usuarioExistente.existe) {
+      // Si el usuario existe, guardar su ID
+      usuarioId = usuarioExistente.id;
+      console.log('Usuario existente con ID:', usuarioId);
+    } else {
+      // Si el usuario no existe, registrarlo con datos por defecto
+      const nuevoUsuario = {
+        name: formulario.nombre,
+        lastname: formulario.apellidos,
+        dni: "00000000A", // DNI por defecto
+        email: formulario.correo,
+        password: "password", // Contraseña por defecto
+        phone: "000000000", // Teléfono por defecto
+        mobile: formulario.movil, // Móvil por defecto
+        gender: "M",
+        birthdate: "2000-01-01", // Fecha de nacimiento por defecto
+        addressId: 1, // Dirección por defecto
+        userTypeId: 1, // Tipo de usuario por defecto
+      };
+
+      const response = await authService.register(nuevoUsuario);
+      usuarioId = response.id; // Obtener el ID del nuevo usuario
+      console.log('Usuario registrado con ID:', usuarioId);
+    }
+
+    // Continuar con la lógica usando el usuarioId
+    console.log('ID del usuario final:', usuarioId);
+
+  } catch (error) {
+    console.error('Error al manejar el usuario:', error);
+    alert('Hubo un problema al verificar o registrar el usuario.');
+  }
+
+  return usuarioId;
+};
 
   const procederPago = /*async*/ async () => {
     try{
+      let usuarioId = manejarUsuario(formulario.correo);
+
         // Preparar el JSON
         const reserva = {
             fechaInicio: formulario.fechaEntrada,
@@ -94,7 +140,10 @@
             habitacionId: habitacion.id,
             servicios: servicios.filter(servicio => servicio.seleccionado) // Filtrar solo los servicios seleccionados
             .map(servicio => ({ id: servicio.id })), 
+
         };
+
+        console.log(reserva);
 
         // Realizar el POST
         const response = await reservaService.crearReserva(reserva);
