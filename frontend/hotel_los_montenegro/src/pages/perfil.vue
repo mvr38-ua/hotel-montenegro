@@ -13,6 +13,20 @@
           <p class="card-text"><strong>Dirección:</strong> {{ user.direccion.direccion }}, {{ user.direccion.municipio }}, {{ user.direccion.provincia }}, {{ user.direccion.pais }}</p>
         </div>
       </div>
+
+      <!-- Formulario para cambiar la contraseña -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Cambiar Contraseña</h5>
+          <form @submit.prevent="changePassword">
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">Nueva Contraseña</label>
+              <input type="password" v-model="newPassword" class="form-control" id="newPassword" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+          </form>
+        </div>
+      </div>
     </div>
     <div v-else>
       <p>No se ha podido cargar la información del usuario.</p>
@@ -57,7 +71,24 @@ export default {
     formatDate(dateString) {
       const options = {year: 'numeric', month: 'long', day: 'numeric'};
       return new Date(dateString).toLocaleDateString(undefined, options);
-    }
+    },
+    async changePassword() {
+      try {
+        console.log(this.user);
+        // Supongamos que el passwordId es el ID del usuario, pero puedes ajustarlo según tu caso.
+        const passwordId = this.user.contraseñaId;  // Asegúrate de tener el ID de la contraseña
+        if (!passwordId) {
+          alert('No se pudo obtener el ID de la contraseña');
+          return;
+        }
+        
+        // Llamamos al servicio de cambio de contraseña con la nueva contraseña y el passwordId
+        await authService.changePassword(this.newPassword, passwordId);
+        this.newPassword = ''; // Limpiar el campo de la nueva contraseña
+      } catch (error) {
+        console.error('Error al cambiar la contraseña:', error);
+      }
+    },
   }
 };
 </script>
