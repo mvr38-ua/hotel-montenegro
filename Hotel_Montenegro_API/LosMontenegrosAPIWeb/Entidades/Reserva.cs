@@ -17,9 +17,9 @@ namespace LosMontenegrosAPIWeb.Entidades
         public int UsuarioId { get; set; }
         public int HabitacionId { get; set; }
 
-        public virtual Habitacion Habitacion { get; set; } = null!;
-        public virtual Usuario Usuario { get; set; } = null!;
+        public virtual Habitacion? Habitacion { get; set; } = null!;
+        public virtual Usuario? Usuario { get; set; } = null!;
 
-        public virtual ICollection<Servicio> Servicios { get; set; }
+        public virtual ICollection<Servicio>? Servicios { get; set; }
     }
 }
