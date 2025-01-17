@@ -40,7 +40,7 @@
             <strong>Sólo Alojamiento</strong>
             <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} €</p>
           </div>
-          <button class="btn btn-custom">Reservar</button>
+          <button class="btn btn-custom" @click="selectService(null)">Reservar</button>
         </li>
         <li
             class="list-group-item d-flex justify-content-between align-items-center"
@@ -49,7 +49,7 @@
             <strong>Alojamiento y desayuno</strong>
             <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} € + {{ calcularPrecioServicio(servicePrices.desayuno) }} € /Total</p>
           </div>
-          <button class="btn btn-custom">Reservar</button>
+          <button class="btn btn-custom" @click="selectService('desayuno')">Reservar</button>
         </li>
         <li
             class="list-group-item d-flex justify-content-between align-items-center"
@@ -58,7 +58,7 @@
             <strong>Media pensión</strong>
             <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} € + {{ calcularPrecioServicio(servicePrices.mediaPension) }} € /Total</p>
           </div>
-          <button class="btn btn-custom">Reservar</button>
+          <button class="btn btn-custom" @click="selectService('mediaPension')">Reservar</button>
         </li>
         <li
             class="list-group-item d-flex justify-content-between align-items-center"
@@ -67,15 +67,33 @@
             <strong>Pensión completa</strong>
             <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} € + {{ calcularPrecioServicio(servicePrices.pensionCompleta) }} € /Total</p>
           </div>
-          <button class="btn btn-custom">Reservar</button>
+          <button class="btn btn-custom" @click="selectService('pensionCompleta')">Reservar</button>
         </li>
       </ul>
+    </div>
+    <!-- Sección de Servicios -->
+    <div v-if="showServiceSection" class="service-section mt-4">
+      <h3>Seleccione los servicios que desea para completar la reserva</h3>
+      <div v-if="loading">Loading services...</div>
+      <div v-else>
+        <div v-for="service in filteredServices" :key="service.id" class="service-item">
+          <label>
+            <input type="checkbox" v-model="service.selected" />
+            <span>{{ service.nombre }} - {{ service.precioServicio }}€</span>
+          </label>
+        </div>
+      </div>
+      <div class="service-buttons mt-3">
+        <button class="btn btn-custom" @click="confirmSelection">Confirmar Reserva</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import authService from '../services/authService';
+import { reservaGlobal } from '../store/reservaGlobal';
 import categoria1 from '../assets/estandar.png';
 import categoria2 from '../assets/economy.png';
 import categoria3 from '../assets/deluxe.png';
@@ -92,7 +110,13 @@ export default {
         mediaPension: 0,
         pensionCompleta: 0
       },
-      selectedOccupants: 1
+      selectedOccupants: 1,
+      showServiceSection: false,
+      services: [],
+      filteredServices: [],
+      loading: true,
+      token: null,
+      selectedService: null
     };
   },
   created() {
@@ -103,7 +127,9 @@ export default {
       this.fechaFinal = this.$route.query.fechaFinal;
       this.imageSrc = this.getImage(this.habitacion.categoriaId);
       this.fetchServicePrices();
+      this.fetchAdditionalServices();
     }
+    this.token = authService.obtenerUsuarioDelToken();
   },
   methods: {
     async fetchServicePrices() {
@@ -120,6 +146,67 @@ export default {
       } catch (error) {
         console.error('Error fetching service prices:', error);
       }
+    },
+    async fetchAdditionalServices() {
+      try {
+        const response = await axios.get('http://localhost:5288/api/Servicios');
+        if (response.data && response.data.$values) {
+          this.services = response.data.$values;
+          this.filteredServices = this.services.filter(service =>
+              !['Desayuno', 'Media Pensión', 'Pensión Completa'].includes(service.nombre)
+          );
+          this.loading = false;
+        }
+      } catch (error) {
+        console.error('Error fetching additional services:', error);
+      }
+    },
+    toggleServiceSection() {
+      this.showServiceSection = !this.showServiceSection;
+    },
+    async confirmSelection() {
+      if (!this.token) {
+        alert('Debe iniciar sesión antes de realizar la reserva.');
+        return;
+      }
+
+      try {
+        const userId = authService.obtenerUsuarioDelToken();
+        const response = await axios.get(`http://localhost:5288/api/Usuario/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        const clientData = response.data;
+
+        reservaGlobal.formulario = {
+          nombre: clientData.nombre,
+          apellidos: clientData.apellidos,
+          correo: clientData.email,
+          movil: clientData.movil,
+          fechaEntrada: this.fechaInicio,
+          fechaSalida: this.fechaFinal,
+        };
+        reservaGlobal.habitacion = this.habitacion;
+        reservaGlobal.servicios = this.filteredServices.filter(service => service.selected);
+
+        if (this.selectedService) {
+          reservaGlobal.servicios.push({
+            nombre: this.selectedService,
+            precioServicio: this.servicePrices[this.selectedService]
+          });
+        }
+
+        console.log(reservaGlobal);
+
+        this.$router.push('/resumen');
+      } catch (error) {
+        console.error('Error fetching client data:', error);
+      }
+    },
+    selectService(service) {
+      this.selectedService = service;
+      this.toggleServiceSection();
     },
     getImage(categoriaId) {
       switch (categoriaId) {
@@ -237,5 +324,37 @@ export default {
   font-size: 1.5rem;
   margin-right: 15px;
   color: lightgray;
+}
+
+.service-section {
+  background-color: #f8f9fa; /* Light background color */
+  color: #343a40; /* Dark text color for better visibility */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.service-item {
+  margin-bottom: 10px;
+}
+
+.service-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.service-buttons button {
+  background-color: lightgray;
+  color: black;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.service-buttons button:hover {
+  background-color: #0056b3;
 }
 </style>
