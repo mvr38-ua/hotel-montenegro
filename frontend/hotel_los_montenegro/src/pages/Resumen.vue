@@ -39,9 +39,8 @@
         <p><strong>Precio total:</strong> {{ precioTotal }} €</p>
         <button class="btn-proceder" @click="procederPago">Proceder con el pago</button>
       </div>
-
     </div>
-  
+  </div>
 </template>
 
 <script setup lang="ts">
