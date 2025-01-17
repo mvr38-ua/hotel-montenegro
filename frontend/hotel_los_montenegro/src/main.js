@@ -24,19 +24,24 @@ import Informes from './components/Informes.vue';
 import WelcomeWebmaster from './components/WelcomeWebmaster.vue';
 import GestionServicio from './components/GestionarServicios.vue';
 import GestionCategoria from './components/GestionarCategorias.vue';
+import PagoExitoso from './pages/pago_exitoso.vue';
+import MisReservas from './pages/MisReservas.vue';
 
 
 const routes = [
   { path: '/', component: Home },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  { path: '/pago', name: 'Pago', component: Pago,},
+  { path: '/pago', name: 'pago', component: Pago,},
   { path: '/about', component: About},
   { path: '/servicios', component: Servicios },
   { path: '/detalles', component: Detail},
   { path: '/habitaciones', component: Habitacionesdisp},
   { path: '/listado', component: listado},
   { path: '/profile', component: Profile },
+  { path: '/pago_exitoso', component: PagoExitoso },
+  { path: '/mis_reservas', component: MisReservas },
+
   {
     path: '/webmaster',
     component: Webmaster,

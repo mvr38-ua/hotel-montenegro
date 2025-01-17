@@ -41,7 +41,7 @@
         <label for="birthdate">Birth Date:</label>
         <input type="date" id="birthdate" v-model="birthdate" required />
       </div>
-      <button type="submit" class="register-button">Register</button>
+      <button type="submit" class="btn btn-custom">Register</button>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       <p v-if="successMessage" class="success">{{ successMessage }}</p>
     </form>
@@ -136,19 +136,18 @@ select {
 }
 
 /* Botón */
-.register-button {
-  padding: 10px;
-  background: #007BFF;
-  color: #fff;
-  font-size: 16px;
-  border: none;
+.btn-custom {
+  background-color: lightgray;
+  color: black;
+  border: 1px solid black;
   border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease;
+  text-align: center;
 }
 
-.register-button:hover {
-  background: #0056b3;
+.btn-custom:hover {
+  background-color: darkgray;
 }
 
 /* Mensajes */

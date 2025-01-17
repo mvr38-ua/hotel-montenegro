@@ -39,7 +39,6 @@
         <p><strong>Precio total:</strong> {{ precioTotal }} €</p>
         <button class="btn-proceder" @click="procederPago">Proceder con el pago</button>
       </div>
-
     </div>
   </div>
 </template>
@@ -157,11 +156,11 @@ const procederPago = async () => {
 
     // Limpiar reserva global y redirigir
     limpiarReserva();
-    router.push({ name: 'pago', query: { precioTotal: precioTotal.value } });
+    router.push({ name: 'pago', query: { precioTotal: precioTotal.value } });  
 
   } catch (error) {
-    console.error('Error al realizar la reserva:', error);
-    alert('Hubo un problema al realizar la reserva');
+      console.error('Error al realizar la reserva:', error);
+      alert('Hubo un problema al realizar la reserva');
   }
 
 };

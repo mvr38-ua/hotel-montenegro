@@ -10,11 +10,9 @@
         <label for="password">Password:</label>
         <input type="password" id="password" v-model="password" required />
       </div>
-      <button type="submit" class="login-button">Login</button>
+      <button type="submit" class="btn btn-custom">Login</button>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       <p v-if="!errorMessage" class="acierto">{{ aciertoMessage }}</p>
-
-      
     </form>
   </div>
 </template>
@@ -73,9 +71,6 @@ const login = async () => {
     errorMessage.value = 'Email o password incorrecto.';
   }
 };
-
-
-
 </script>
 
 <style scoped>
@@ -124,19 +119,18 @@ input {
 }
 
 /* Botón */
-.login-button {
-  padding: 10px;
-  background: #007BFF;
-  color: #fff;
-  font-size: 16px;
-  border: none;
+.btn-custom {
+  background-color: lightgray;
+  color: black;
+  border: 1px solid black;
   border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease;
+  text-align: center;
 }
 
-.login-button:hover {
-  background: #0056b3;
+.btn-custom:hover {
+  background-color: darkgray;
 }
 
 /* Mensajes de error */
@@ -146,6 +140,7 @@ input {
   font-size: 14px;
   margin-top: 10px;
 }
+
 .acierto {
   text-align: center;
   color: rgb(89, 255, 0);

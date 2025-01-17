@@ -1,4 +1,4 @@
-const API_URL = 'https://sandbox.green-sys.es/sales'; // URL del entorno de pruebas
+const API_URL = 'https://api.green-sys.es/sales'; // URL del entorno de pruebas
 
 const API_KEY = 'sk_u0flwbjphgm5xrcazr'; // Tu API Key
 

@@ -149,8 +149,8 @@ namespace LosMontenegrosAPIWeb.Entidades
                     .WithMany(p => p.Reservas)
                     .UsingEntity<Dictionary<string, object>>(
                         "ReservaServicio",
-                        l => l.HasOne<Servicio>().WithMany().HasForeignKey("ServicioId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__Reserva_S__servi__3E52440B"),
-                        r => r.HasOne<Reserva>().WithMany().HasForeignKey("ReservaId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__Reserva_S__reser__3D5E1FD2"),
+                        l => l.HasOne<Servicio>().WithMany().HasForeignKey("ServicioId").OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK__Reserva_S__servi__3E52440B"),
+                        r => r.HasOne<Reserva>().WithMany().HasForeignKey("ReservaId").OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK__Reserva_S__reser__3D5E1FD2"),
                         j =>
                         {
                             j.HasKey("ReservaId", "ServicioId").HasName("PK__Reserva___2BB0DED80D8E2AEC");
