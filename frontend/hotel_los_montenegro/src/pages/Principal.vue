@@ -75,13 +75,13 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 export default {
-  name: 'BuscarHabitaciones',
+  name: 'Principal',
   data() {
     return {
       fechaInicio: '',
       fechaFinal: '',
       numPersonas: 1,
-      errorMessage: '' // Add a data property to store error messages
+      errorMessage: ''
     };
   },
   setup() {
@@ -95,7 +95,7 @@ export default {
           fechaInicio: new Date(this.fechaInicio).toISOString(),
           fechaFin: new Date(this.fechaFinal).toISOString(),
           capacidadMinima: this.numPersonas,
-          categoriaId: null // Puedes ajustar esto según sea necesario
+          categoriaId: null
         };
 
         const response = await axios.post('http://localhost:5288/api/Reserva/HabitacionesDisponibles', filtro);
@@ -121,10 +121,10 @@ export default {
 
 <style scoped>
 .search-bar {
-  background-color: #f0f0f0; /* Gray background */
+  background-color: #f0f0f0;
   padding: 20px;
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-bar input, .search-bar button {
@@ -132,7 +132,7 @@ export default {
 }
 
 .btn-elegant {
-  background-color: #2c3e50; /* Dark blue color */
+  background-color: #2c3e50;
   color: white;
   border: none;
   border-radius: 5px;
@@ -141,7 +141,7 @@ export default {
 }
 
 .btn-elegant:hover {
-  background-color: #1a252f; /* Darker shade on hover */
+  background-color: #1a252f;
 }
 
 .main-image img, .secondary-image img {

@@ -1,124 +1,95 @@
 <template>
-  <div id="app" class="container mt-4">
-    <!-- Contenedor Principal -->
-    <div class="row">
-      <!-- Imagen y Descripción -->
-      <div class="col-md-6">
-        <img
-            class="img-fluid rounded"
-            :src="imageSrc"
-            alt="Room"
-        />
-      </div>
-      <div class="col-md-6">
-        <h1 class="mb-3">Habitación {{ getCategoriaNombre(habitacion.categoriaId) }}</h1>
-        <div class="d-flex justify-content-center mb-3 icon-container">
-          <i class="fas fa-bed me-3"></i>
-          <i class="fas fa-wifi me-3"></i>
-          <i class="fas fa-tv me-3"></i>
-          <i class="fas fa-shower me-3"></i>
-        </div>
-        <p class="fw-bold">
-          Ocupación: {{ habitacion.capacidad }} Adultos (Máximo por Habitación)
-        </p>
-        <p>{{ getCategoriaDescripcion(habitacion.categoriaId) }}</p>
-        <p><strong>Fechas:</strong> {{ formatDate(fechaInicio) }} - {{ formatDate(fechaFinal) }}</p>
-        <div class="mb-3 text-center">
-          <label for="guests" class="form-label">Ocupantes:</label>
-          <input type="number" id="guests" class="form-control w-auto mx-auto" :max="habitacion.capacidad" min="1" v-model="selectedOccupants">
+  <div class="container mt-4">
+    <h1 class="mb-4">Listado de Habitaciones Disponibles</h1>
+    <div v-if="categoriasCargadas" class="row" v-for="habitacion in habitacionesFiltradas" :key="habitacion.id">
+      <div class="col-md-12">
+        <div class="card mb-4">
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img :src="getImage(habitacion.categoriaId)" class="card-img" alt="Imagen de la habitación">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">Habitación {{ getCategoriaNombre(habitacion.categoriaId) }}</h5>
+                <p class="card-text"><strong>Fechas:</strong> {{ formatDate(fechaInicio) }} - {{ formatDate(fechaFinal) }}</p>
+                <p class="card-text"><strong>Precio desde:</strong> {{ habitacion.precioBase }} €/noche</p>
+                <button class="btn btn-custom" @click="reservar(habitacion)">Reservar</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <!-- Lista de Precios -->
-    <div class="mt-5">
-      <h2 class="mb-4">Precios</h2>
-      <ul class="list-group">
-        <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <div class="text-left">
-            <strong>Sólo Alojamiento</strong>
-            <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} €</p>
-          </div>
-          <button class="btn btn-custom">Reservar</button>
-        </li>
-        <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <div class="text-left">
-            <strong>Alojamiento y desayuno</strong>
-            <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} € + {{ calcularPrecioServicio(servicePrices.desayuno) }} € /Total</p>
-          </div>
-          <button class="btn btn-custom">Reservar</button>
-        </li>
-        <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <div class="text-left">
-            <strong>Media pensión</strong>
-            <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} € + {{ calcularPrecioServicio(servicePrices.mediaPension) }} € /Total</p>
-          </div>
-          <button class="btn btn-custom">Reservar</button>
-        </li>
-        <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <div class="text-left">
-            <strong>Pensión completa</strong>
-            <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} € + {{ calcularPrecioServicio(servicePrices.pensionCompleta) }} € /Total</p>
-          </div>
-          <button class="btn btn-custom">Reservar</button>
-        </li>
-      </ul>
+    <div v-else>
+      <p>Cargando categorías...</p>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import categoria1 from '../assets/estandar.png';
-import categoria2 from '../assets/economy.png';
+import { useRouter } from 'vue-router';
+import categoria1 from '../assets/economy.png';
+import categoria2 from '../assets/estandar.png';
 import categoria3 from '../assets/deluxe.png';
 
 export default {
   data() {
     return {
-      habitacion: null,
+      habitaciones: [],
+      categorias: {},
+      categoriasCargadas: false,
       fechaInicio: '',
-      fechaFinal: '',
-      imageSrc: '',
-      servicePrices: {
-        desayuno: 0,
-        mediaPension: 0,
-        pensionCompleta: 0
-      },
-      selectedOccupants: 1
+      fechaFinal: ''
     };
   },
-  created() {
-    const habitacion = this.$route.query.habitacion;
-    if (habitacion) {
-      this.habitacion = JSON.parse(habitacion);
-      this.fechaInicio = this.$route.query.fechaInicio;
-      this.fechaFinal = this.$route.query.fechaFinal;
-      this.imageSrc = this.getImage(this.habitacion.categoriaId);
-      this.fetchServicePrices();
+  computed: {
+    habitacionesFiltradas() {
+      const categorias = new Set();
+      return this.habitaciones.filter(habitacion => {
+        if (!categorias.has(habitacion.categoriaId)) {
+          categorias.add(habitacion.categoriaId);
+          return true;
+        }
+        return false;
+      });
     }
   },
-  methods: {
-    async fetchServicePrices() {
+  created() {
+    const disponibles = this.$route.query.disponibles;
+    if (disponibles) {
       try {
-        const response = await axios.get('http://localhost:5288/api/Servicios');
-        if (response.data && response.data.$values) {
-          const services = response.data.$values;
-          this.servicePrices = {
-            desayuno: services.find(service => service.nombre === 'Desayuno')?.precioServicio || 0,
-            mediaPension: services.find(service => service.nombre === 'Media Pensión')?.precioServicio || 0,
-            pensionCompleta: services.find(service => service.nombre === 'Pensión Completa')?.precioServicio || 0
-          };
+        const parsedDisponibles = JSON.parse(disponibles);
+        if (Array.isArray(parsedDisponibles)) {
+          this.habitaciones = parsedDisponibles;
+        } else {
+          console.error('Parsed disponibles is not an array:', parsedDisponibles);
+          this.habitaciones = [];
+        }
+      } catch (e) {
+        console.error('Error parsing habitaciones:', e);
+        this.habitaciones = [];
+      }
+      this.fechaInicio = this.$route.query.fechaInicio;
+      this.fechaFinal = this.$route.query.fechaFinal;
+    }
+    this.fetchCategorias();
+  },
+  methods: {
+    async fetchCategorias() {
+      try {
+        const response = await axios.get('http://localhost:5288/api/Categoriums');
+        if (response.data && Array.isArray(response.data.$values)) {
+          this.categorias = response.data.$values.reduce((acc, categoria) => {
+            acc[categoria.id] = categoria.nombre;
+            return acc;
+          }, {});
+          this.categoriasCargadas = true;
+        } else {
+          console.error('API response does not contain $values array:', response.data);
         }
       } catch (error) {
-        console.error('Error fetching service prices:', error);
+        console.error('Error fetching categories:', error);
       }
     },
     getImage(categoriaId) {
@@ -134,28 +105,7 @@ export default {
       }
     },
     getCategoriaNombre(categoriaId) {
-      switch (categoriaId) {
-        case 1:
-          return 'Economy';
-        case 2:
-          return 'Estandar';
-        case 3:
-          return 'Deluxe';
-        default:
-          return 'Desconocida';
-      }
-    },
-    getCategoriaDescripcion(categoriaId) {
-      switch (categoriaId) {
-        case 1:
-          return 'Habitación Economy: Estas habitaciones no tienen balcón y sus ventanas ofrecen vistas a un pequeño jardín interior. Disponen de dos camas de 1.05m o una cama de 2x2m. Algunos baños cuentan con ducha y otros con bañera.';
-        case 2:
-          return 'Habitación Estandar: Estas habitaciones ofrecen vistas al jardín principal y cuentan con un balcón privado. Disponen de una cama de 2x2m y un baño con bañera.';
-        case 3:
-          return 'Habitación Deluxe: Estas habitaciones ofrecen vistas panorámicas al mar y cuentan con un balcón privado. Disponen de una cama de 2x2m, una sala de estar y un baño con bañera de hidromasaje.';
-        default:
-          return 'Descripción no disponible.';
-      }
+      return this.categorias[categoriaId] || 'Desconocida';
     },
     formatDate(date) {
       const d = new Date(date);
@@ -164,25 +114,21 @@ export default {
       const year = d.getFullYear();
       return `${day}/${month}/${year}`;
     },
-    calcularPrecioTotal(precioBase) {
-      const fechaInicio = new Date(this.fechaInicio);
-      const fechaFinal = new Date(this.fechaFinal);
-      const diffTime = Math.abs(fechaFinal - fechaInicio);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return (precioBase * diffDays).toFixed(2);
-    },
-    calcularPrecioServicio(precioServicio) {
-      const fechaInicio = new Date(this.fechaInicio);
-      const fechaFinal = new Date(this.fechaFinal);
-      const diffTime = Math.abs(fechaFinal - fechaInicio);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return (precioServicio * diffDays).toFixed(2);
+    reservar(habitacion) {
+      this.$router.push({
+        path: '/detalles',
+        query: {
+          habitacion: JSON.stringify(habitacion),
+          fechaInicio: this.fechaInicio,
+          fechaFinal: this.fechaFinal
+        }
+      });
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .card {
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -208,7 +154,7 @@ export default {
 }
 
 .btn-custom {
-  background-color: lightgray;
+  background-color: gray;
   color: black;
   border: 1px solid black;
   border-radius: 5px;
@@ -219,23 +165,5 @@ export default {
 
 .btn-custom:hover {
   background-color: darkgray;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.icon-container {
-  justify-content: center;
-}
-
-.icon-container i {
-  font-size: 1.5rem;
-  margin-right: 15px;
-  color: lightgray;
 }
 </style>
