@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LosMontenegrosAPIWeb.Entidades;
 using LosMontenegrosAPIWeb.Repositories;
+using BCrypt.Net;
 
 namespace LosMontenegrosAPIWeb.Controllers
 {
@@ -46,6 +47,10 @@ namespace LosMontenegrosAPIWeb.Controllers
                 return BadRequest();
             }
 
+            // Hashea la nueva contraseña antes de actualizarla
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(contraseñaUsuario.Contraseña);
+            contraseñaUsuario.Contraseña = hashedPassword;
+
             var actualizado = await _contraseñaUsuarioRepository.ActualizarContraseñaUsuarioAsync(contraseñaUsuario);
 
             if (!actualizado)
@@ -55,6 +60,7 @@ namespace LosMontenegrosAPIWeb.Controllers
 
             return NoContent();
         }
+
 
         // POST: api/ContraseñasUsuarios
         [HttpPost]

@@ -36,10 +36,27 @@ namespace LosMontenegrosAPIWeb.Repositories
         public async Task<List<Usuario>> GetAllUsuariosAsync()
         {
             return await _context.Usuarios
-                .Include(u => u.Contraseña)
-                .Include(u => u.Direccion)
-                .Include(u => u.TipoUsuario)
-                .ToListAsync();
+                .Select( u => new Usuario
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Nombre = u.Nombre,
+                    Apellidos = u.Apellidos,
+                    Dni = u.Dni,
+                    Movil = u.Movil,
+                    Telefono = u.Telefono,
+                    Activo = u.Activo,
+                    FechaNac = u.FechaNac,
+                    Direccion = new DireccionUsuario
+                    {
+                        Direccion = u.Direccion.Direccion
+                    },
+                    TipoUsuario = new TipoUsuario
+                    {
+                        Tipo = u.TipoUsuario.Tipo
+                    }
+                }).ToListAsync();
+
         }
 
         // Update
@@ -58,6 +75,12 @@ namespace LosMontenegrosAPIWeb.Repositories
                 _context.Usuarios.Remove(usuario);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        // Obtener usuario por el email
+        public async Task<Usuario?> GetUsuarioByEmailAsync(string email)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

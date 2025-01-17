@@ -19,6 +19,22 @@ namespace LosMontenegrosAPIWeb.Repositories
         // Create
         public async Task AddReservaAsync(Reserva reserva)
         {
+            if (reserva.Servicios != null && reserva.Servicios.Any())
+            {
+                // Buscar los servicios que existen en la base de datos usando los IDs de la reserva
+                var servicios = await _context.Servicios
+                    .Where(s => reserva.Servicios.Select(rs => rs.Id).Contains(s.Id))
+                    .ToListAsync();
+
+                // Si el número de servicios encontrados no coincide con el número de servicios enviados, devolver error
+                if (servicios.Count != reserva.Servicios.Count)
+                {
+                    throw new ArgumentException("Algunos de los servicios no existen.");
+                }
+
+                // Asociar los servicios encontrados a la reserva
+                reserva.Servicios = new HashSet<Servicio>(servicios);
+            }
             await _context.Reservas.AddAsync(reserva);
             await _context.SaveChangesAsync();
         }
@@ -36,10 +52,33 @@ namespace LosMontenegrosAPIWeb.Repositories
         public async Task<List<Reserva>> GetAllReservasAsync()
         {
             return await _context.Reservas
-                .Include(r => r.Habitacion)
-                .Include(r => r.Usuario)
-                .Include(r => r.Servicios)
-                .ToListAsync();
+             .Select(r => new Reserva
+             {
+                 Id = r.Id,
+                 FechaInicio = r.FechaInicio,
+                 FechaFinal = r.FechaFinal,
+                 PrecioTotal = r.PrecioTotal,
+                 UsuarioId = r.UsuarioId,
+                 HabitacionId = r.HabitacionId, 
+                 Usuario = new Usuario
+                 {
+                     Id = r.Usuario.Id,
+                     Nombre = r.Usuario.Nombre,
+                     Email = r.Usuario.Email
+                 },
+                 Habitacion = new Habitacion
+                 {
+                     Id = r.Habitacion.Id,
+                     Numero = r.Habitacion.Numero
+                 },
+                 Servicios = r.Servicios.Select(s => new Servicio
+                 {
+                     Id = s.Id,
+                     Nombre = s.Nombre,
+                     PrecioServicio = s.PrecioServicio 
+                 }).ToList()
+             })
+             .ToListAsync();
         }
 
         // Update

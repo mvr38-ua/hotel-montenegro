@@ -66,7 +66,7 @@ namespace LosMontenegrosAPIWeb.Controllers
 
         // DELETE: api/Habitaciones/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHabitacion(int id)
+        public async Task<ActionResult> DeleteHabitacion(int id)
         {
             var eliminado = await _habitacionRepository.EliminarHabitacionAsync(id);
 
@@ -76,6 +76,34 @@ namespace LosMontenegrosAPIWeb.Controllers
             }
 
             return NoContent();
+        }
+
+        // Endpoint para bloquear una habitación: api/Habitaciones/bloquear/{id}
+        [HttpPut("bloquear/{id}")]
+        public async Task<IActionResult> BloquearHabitacion(int id)
+        {
+            var habitacion = await _habitacionRepository.BloquearHabitacionAsync(id);
+
+            if (habitacion == null)
+            {
+                return NotFound("Habitación no encontrada");
+            }
+
+            return Ok(habitacion); // Devuelve la habitación bloqueada
+        }
+
+        // Endpoint para desbloquear una habitación: api/Habitaciones/desbloquear/{id}
+        [HttpPut("desbloquear/{id}")]
+        public async Task<IActionResult> DesbloquearHabitacion(int id)
+        {
+            var habitacion = await _habitacionRepository.DesbloquearHabitacionAsync(id);
+
+            if (habitacion == null)
+            {
+                return NotFound("Habitación no encontrada");
+            }
+
+            return Ok(habitacion); // Devuelve la habitación desbloqueada
         }
     }
 }
