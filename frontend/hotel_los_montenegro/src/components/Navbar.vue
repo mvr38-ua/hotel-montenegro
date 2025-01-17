@@ -27,10 +27,10 @@
               </div>
             </li>
             <li class="nav-item" v-if="!isAuthenticated">
-              <router-link to="/login" class="nav-link text-white">Iniciar sesión</router-link>
+              <router-link to="/login" class="nav-link text-white" @click="closeMenus">Iniciar sesión</router-link>
             </li>
             <li class="nav-item" v-if="!isAuthenticated">
-              <router-link to="/register" class="nav-link text-white">Registrarse</router-link>
+              <router-link to="/register" class="nav-link text-white" @click="closeMenus">Registrarse</router-link>
             </li>
           </ul>
         </div>
@@ -40,10 +40,10 @@
       <button class="close-btn" @click="toggleSidebar">&times;</button>
       <hr class="separator">
       <ul>
-        <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/about">About</router-link></li>
-        <li><router-link to="/servicios">Servicios</router-link></li>
-        <li><router-link to="/listado">Habitaciones</router-link></li>
+        <li><router-link to="/" @click="closeMenus">Home</router-link></li>
+        <li><router-link to="/about" @click="closeMenus">About</router-link></li>
+        <li><router-link to="/servicios" @click="closeMenus">Servicios</router-link></li>
+        <li><router-link to="/listado" @click="closeMenus">Habitaciones</router-link></li>
       </ul>
     </div>
     <div class="overlay" v-if="sidebarOpen" @click="toggleSidebar"></div>
@@ -74,12 +74,18 @@ export default {
       this.dropdownOpen = !this.dropdownOpen;
     },
     goToProfile() {
+      this.closeMenus();
       this.$router.push("/profile");
     },
     logout() {
       localStorage.removeItem("token");
       this.isAuthenticated = false;
+      this.closeMenus();
       this.$router.push("/login");
+    },
+    closeMenus() {
+      this.sidebarOpen = false;
+      this.dropdownOpen = false;
     },
   },
 };
