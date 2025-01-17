@@ -41,10 +41,11 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import reservasService from '../services/reservasService';
+import authService from "../services/authService";
 
 // Variables reactivas
 const reservas = ref([]);
-const usuarioId = ref(1); // ID del usuario actual
+const usuarioId = authService.obtenerUsuarioDelToken(); 
 const paginaActual = ref(1);
 const filasPorPagina = ref(10);
 
@@ -64,7 +65,7 @@ const obtenerNombresServicios = (servicios) => {
 // Función para cargar reservas del usuario
 const cargarReservas = async () => {
     try {
-      const response = await reservasService.obtenerReservasPorUsuario(usuarioId.value);
+      const response = await reservasService.obtenerReservasPorUsuario(usuarioId);
       reservas.value = response.$values.map(reserva => ({
       ...reserva,
       fechaInicio: reserva.fechaInicio 

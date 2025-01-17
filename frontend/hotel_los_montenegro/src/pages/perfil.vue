@@ -12,6 +12,9 @@
           <p class="card-text"><strong>Fecha de Nacimiento:</strong> {{ formatDate(user.fechaNac) }}</p>
           <p class="card-text"><strong>Dirección:</strong> {{ user.direccion.direccion }}, {{ user.direccion.municipio }}, {{ user.direccion.provincia }}, {{ user.direccion.pais }}</p>
         </div>
+        <div>
+          <button class="btn btn-primary" @click="irAReservas">Ver Mis Reservas</button>
+        </div>
       </div>
 
       <!-- Formulario para cambiar la contraseña -->
@@ -48,6 +51,10 @@ export default {
     this.fetchUser();
   },
   methods: {
+    irAReservas() {
+        // Redirige a la página de reservas o detalles de usuario
+        this.$router.push('/mis_reservas'); 
+      },
     async fetchUser() {
       try {
         const token = localStorage.getItem('token');

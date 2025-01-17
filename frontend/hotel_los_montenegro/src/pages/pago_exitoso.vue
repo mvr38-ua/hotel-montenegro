@@ -25,7 +25,7 @@
     methods: {
       irAReservas() {
         // Redirige a la página de reservas o detalles de usuario
-        this.$router.push({ name: 'misReservas' });  // Asegúrate de tener una ruta llamada 'misReservas'
+        this.$router.push('/mis_reservas'); 
       }
     }
   };
