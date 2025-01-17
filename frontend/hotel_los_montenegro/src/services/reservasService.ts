@@ -32,6 +32,7 @@ export default {
   },
 
   async obtenerReservasPorUsuario(usuarioId: number) {
+    console.log("Usuario: ",usuarioId);
     const response = await fetch(`${API_URL}/Usuario/${usuarioId}`, {
       method: 'GET',
       headers: {

@@ -152,7 +152,6 @@
 
         // Limpiar reserva global y redirigir
         limpiarReserva();
-        alert('Reserva realizada con éxito');
         router.push({ name: 'pago', query: { precioTotal: precioTotal.value } });  
         
     } catch (error) {
