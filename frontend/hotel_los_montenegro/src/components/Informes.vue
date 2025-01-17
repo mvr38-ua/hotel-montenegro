@@ -24,7 +24,7 @@
             <td>{{ reserva.fechaInicio }}</td>
             <td>{{ reserva.fechaFinal }}</td>
             <td>{{ obtenerNombresServicios(reserva.servicios) }}</td>
-            <td>{{ reserva.precioTotal }}</td>
+            <td>{{ reserva.precioTotal  + " €" }}</td>
             <td>
               <button class="botonBorrar" @click="eliminarReservaHandler(reserva.id)">🗑️</button>
             </td>
