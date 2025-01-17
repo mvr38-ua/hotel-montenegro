@@ -36,10 +36,33 @@ namespace LosMontenegrosAPIWeb.Repositories
         public async Task<List<Reserva>> GetAllReservasAsync()
         {
             return await _context.Reservas
-                .Include(r => r.Habitacion)
-                .Include(r => r.Usuario)
-                .Include(r => r.Servicios)
-                .ToListAsync();
+             .Select(r => new Reserva
+             {
+                 Id = r.Id,
+                 FechaInicio = r.FechaInicio,
+                 FechaFinal = r.FechaFinal,
+                 PrecioTotal = r.PrecioTotal,
+                 UsuarioId = r.UsuarioId,
+                 HabitacionId = r.HabitacionId, 
+                 Usuario = new Usuario
+                 {
+                     Id = r.Usuario.Id,
+                     Nombre = r.Usuario.Nombre,
+                     Email = r.Usuario.Email
+                 },
+                 Habitacion = new Habitacion
+                 {
+                     Id = r.Habitacion.Id,
+                     Numero = r.Habitacion.Numero
+                 },
+                 Servicios = r.Servicios.Select(s => new Servicio
+                 {
+                     Id = s.Id,
+                     Nombre = s.Nombre,
+                     PrecioServicio = s.PrecioServicio 
+                 }).ToList()
+             })
+             .ToListAsync();
         }
 
         // Update
