@@ -51,7 +51,7 @@
     <!-- Sección Derecha: Formulario -->
     <div class="formulario-section caja-gris">
       <h2>Formulario de Reservas</h2>
-      <form @submit.prevent="abrirModalServicios">
+      <form @submit.prevent="irAPaginaResumen">
         <div class="form-group">
           <label for="nombre">Nombre</label>
           <input id="nombre" v-model="formulario.nombre" type="text" required />
@@ -151,6 +151,8 @@ import habitacionService from '../services/habitacionesService';
 import serviciosService from '../services/serviciosService';
 import authService from '../services/authService';
 import { useRouter } from 'vue-router';
+import { reservaGlobal } from '../store/reservaGlobal';
+
 
 const reservas = ref([]);
 const habitaciones = ref([]);
@@ -333,6 +335,31 @@ const verificarPermiso = async () => {
     console.error('Error al verificar permisos:', error);
     router.push('/');
   }
+};
+
+const irAPaginaResumen = () => {
+  // Validar campos obligatorios del formulario
+  const { nombre, apellidos, correo, movil, fechaEntrada, fechaSalida } = formulario.value;
+
+  if (!nombre || !apellidos || !correo || !movil || !fechaEntrada || !fechaSalida) {
+    alert('Por favor, completa todos los campos obligatorios del formulario.');
+    return;
+  }
+
+  // Validar que se haya seleccionado una habitación
+  if (!habitacionSeleccionada.value) {
+    alert('Por favor, selecciona una habitación.');
+    return;
+  }
+
+  reservaGlobal.formulario = formulario.value;
+  reservaGlobal.habitacion = habitacionSeleccionada.value;
+  reservaGlobal.servicios = servicios.value.filter((s) => s.seleccionado);
+
+  console.log(reservaGlobal);
+
+  router.push('/resumen');
+
 };
 
 // Inicialización

@@ -12,6 +12,7 @@ import Webmaster from './pages/Webmaster.vue';
 import GestionHabitaciones from './components/GestionHabitaciones.vue';
 import GestionTemporada from './components/GestionarTemporada.vue';
 import ReservaRecepcion from './pages/ReservaRecepcion.vue';
+import Resumen from './pages/Resumen.vue';
 
 import Pago from './pages/Pago.vue';
 
@@ -47,6 +48,8 @@ const routes = [
     ],
   },
   { path: '/recepcionista', component: ReservaRecepcion },
+  { path: '/resumen', component: Resumen },
+
 ];
 
 const router = createRouter({
