@@ -25,6 +25,7 @@ import WelcomeWebmaster from './components/WelcomeWebmaster.vue';
 import GestionServicio from './components/GestionarServicios.vue';
 import GestionCategoria from './components/GestionarCategorias.vue';
 import PagoExitoso from './pages/pago_exitoso.vue';
+import MisReservas from './pages/MisReservas.vue';
 
 
 const routes = [
@@ -39,6 +40,7 @@ const routes = [
   { path: '/listado', component: listado},
   { path: '/profile', component: Profile },
   { path: '/pago_exitoso', component: PagoExitoso },
+  { path: '/mis_reservas', component: MisReservas },
 
   {
     path: '/webmaster',
