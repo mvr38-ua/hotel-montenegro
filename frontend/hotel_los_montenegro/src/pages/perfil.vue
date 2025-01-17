@@ -13,7 +13,7 @@
           <p class="card-text"><strong>Dirección:</strong> {{ user.direccion.direccion }}, {{ user.direccion.municipio }}, {{ user.direccion.provincia }}, {{ user.direccion.pais }}</p>
         </div>
         <div>
-          <button class="btn btn-primary" @click="irAReservas">Ver Mis Reservas</button>
+          <button class="btn btn-custom" @click="irAReservas">Ver Mis Reservas</button>
         </div>
       </div>
 
@@ -26,7 +26,7 @@
               <label for="newPassword" class="form-label">Nueva Contraseña</label>
               <input type="password" v-model="newPassword" class="form-control" id="newPassword" required />
             </div>
-            <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+            <button type="submit" class="btn btn-custom">Cambiar Contraseña</button>
           </form>
         </div>
       </div>
@@ -52,9 +52,9 @@ export default {
   },
   methods: {
     irAReservas() {
-        // Redirige a la página de reservas o detalles de usuario
-        this.$router.push('/mis_reservas'); 
-      },
+      // Redirige a la página de reservas o detalles de usuario
+      this.$router.push('/mis_reservas');
+    },
     async fetchUser() {
       try {
         const token = localStorage.getItem('token');
@@ -88,7 +88,7 @@ export default {
           alert('No se pudo obtener el ID de la contraseña');
           return;
         }
-        
+
         // Llamamos al servicio de cambio de contraseña con la nueva contraseña y el passwordId
         await authService.changePassword(this.newPassword, passwordId);
         this.newPassword = ''; // Limpiar el campo de la nueva contraseña
@@ -117,5 +117,18 @@ export default {
 
 .card-body {
   text-align: left;
+}
+
+.btn-custom {
+  background-color: lightgray;
+  color: black;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+  background-color: darkgray;
 }
 </style>

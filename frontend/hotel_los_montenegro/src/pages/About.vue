@@ -49,55 +49,77 @@
 
 <style scoped>
 .about-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  background-color: #f4f4f9;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Georgia', serif;
 }
 
 h1 {
-  color: #2c3e50;
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+  color: #2c3e50; /* Dark gray */
+  font-size: 3rem;
+  margin-bottom: 25px;
+  text-align: center;
+  font-weight: bold;
 }
 
 h2 {
-  color: #34495e;
-  font-size: 1.8rem;
-  margin-top: 20px;
+  color: #34495e; /* Medium dark gray */
+  font-size: 2rem;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #34495e;
+  padding-bottom: 5px;
 }
 
 p {
-  font-size: 1.1rem;
-  color: #7f8c8d;
-  line-height: 1.6;
+  font-size: 1.2rem;
+  color: #7f8c8d; /* Medium gray */
+  line-height: 1.8;
+  margin-bottom: 20px;
 }
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  margin-top: 25px;
 }
 
 .service-item {
   background-color: #ffffff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .service-item h3 {
-  color: #2c3e50;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
+  color: #2c3e50; /* Dark gray */
+  font-size: 1.8rem;
+  margin-bottom: 15px;
 }
 
 .service-item p {
-  font-size: 1rem;
-  color: #7f8c8d;
+  font-size: 1.1rem;
+  color: #7f8c8d; /* Medium gray */
+}
+
+blockquote {
+  font-size: 1.2rem;
+  color: #555; /* Medium dark gray */
+  border-left: 4px solid #34495e;
+  padding-left: 15px;
+  margin: 20px 0;
+  font-style: italic;
 }
 </style>
