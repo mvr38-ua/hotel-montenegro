@@ -1,8 +1,8 @@
 <template>
   <div class="container mt-4">
     <h1 class="mb-4">Listado de Habitaciones</h1>
-    <div v-if="habitaciones.length">
-      <div v-for="habitacion in habitaciones" :key="habitacion.id" class="row mb-4">
+    <div v-if="filteredHabitaciones.length">
+      <div v-for="habitacion in filteredHabitaciones" :key="habitacion.id" class="row mb-4">
         <div class="col-md-12">
           <div class="card d-flex flex-row">
             <img :src="getImage(habitacion.categoriaId)" class="card-img-left" alt="Imagen de la habitación">
@@ -37,7 +37,8 @@ import categoria3 from '../assets/deluxe.png';
 export default {
   data() {
     return {
-      habitaciones: []
+      habitaciones: [],
+      filteredHabitaciones: []
     };
   },
   created() {
@@ -49,10 +50,21 @@ export default {
         const response = await axios.get('http://localhost:5288/api/Habitaciones');
         if (response.data && response.data.$values) {
           this.habitaciones = response.data.$values;
+          this.filteredHabitaciones = this.filterUniqueCategories(this.habitaciones);
         }
       } catch (error) {
         console.error('Error fetching habitaciones:', error);
       }
+    },
+    filterUniqueCategories(habitaciones) {
+      const uniqueCategories = new Set();
+      return habitaciones.filter(habitacion => {
+        if (!uniqueCategories.has(habitacion.categoriaId)) {
+          uniqueCategories.add(habitacion.categoriaId);
+          return true;
+        }
+        return false;
+      });
     },
     getImage(categoriaId) {
       switch (categoriaId) {
