@@ -154,7 +154,7 @@ export default {
 }
 
 .btn-custom {
-  background-color: gray;
+  background-color: lightgray;
   color: black;
   border: 1px solid black;
   border-radius: 5px;
