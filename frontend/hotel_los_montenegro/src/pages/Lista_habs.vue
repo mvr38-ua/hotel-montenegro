@@ -8,13 +8,13 @@
             <img :src="getImage(habitacion.categoriaId)" class="card-img-left" alt="Imagen de la habitación">
             <div class="card-body">
               <h5 class="card-title">Habitación {{ getCategoriaNombre(habitacion.categoriaId) }}</h5>
-              <p class="card-text">{{ habitacion.descripcion }}</p>
-              <p class="card-text"><strong>Precio:</strong> {{ habitacion.precioBase }} €/noche</p>
               <div class="amenities">
                 <i class="fas fa-wifi" v-if="habitacion.wifi"></i>
                 <i class="fas fa-bath" v-if="habitacion.bano"></i>
                 <!-- Add more icons as needed -->
               </div>
+              <p class="card-text">{{ habitacion.descripcion }}</p>
+              <p class="card-text"><strong>Precio:</strong> {{ habitacion.precioBase }} €/noche</p>
               <p class="card-description">{{ getCategoriaDescripcion(habitacion.categoriaId) }}</p>
             </div>
           </div>

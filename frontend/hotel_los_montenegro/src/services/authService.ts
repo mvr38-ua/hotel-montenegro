@@ -69,10 +69,25 @@ export default {
     console.log('Payload del token:', payload);
     return payload.TipoUsuario; // Suponiendo que el rol está en la propiedad "role"
   },
-
   // Opcional: Método para cerrar sesión
   logout() {
     localStorage.removeItem('token'); // Eliminar el token
   },
+  obtenerUsuarioDelToken() {
+    const token = localStorage.getItem('token'); // Recuperar el token del almacenamiento
+    if (!token) {
+      throw new Error('No se encontró un token, el usuario no está autenticado');
+    }
+  
+    try {
+      // Decodificar el payload del token (asumiendo que es un JWT)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      // Extraer y devolver el ID del usuario
+      return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+    } catch (error) {
+      console.error('Error al decodificar el token:', error);
+      throw new Error('Token no válido');
+    }
+  }
   
 };
