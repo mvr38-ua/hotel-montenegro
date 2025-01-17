@@ -45,7 +45,7 @@ import authService from "../services/authService";
 
 // Variables reactivas
 const reservas = ref([]);
-const usuarioId = authService.obtenerUsuarioDelToken(); 
+const usuarioId = authService.obtenerUsuarioDelToken(); // ID del usuario actual
 const paginaActual = ref(1);
 const filasPorPagina = ref(10);
 
