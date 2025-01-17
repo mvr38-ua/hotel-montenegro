@@ -95,6 +95,7 @@ export default {
       throw new Error('Token no válido');
     }
   },
+
   async changePassword(newPassword, passwordId) {  // Añadí 'passwordId' como parámetro
     if (!newPassword) {
       alert('Por favor ingresa una nueva contraseña');

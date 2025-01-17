@@ -40,7 +40,7 @@
             <strong>Sólo Alojamiento</strong>
             <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} €</p>
           </div>
-          <button class="btn btn-custom" @click="toggleServiceSection">Reservar</button>
+          <button class="btn btn-custom" @click="selectService(null)">Reservar</button>
         </li>
         <li
             class="list-group-item d-flex justify-content-between align-items-center"
@@ -49,7 +49,7 @@
             <strong>Alojamiento y desayuno</strong>
             <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} € + {{ calcularPrecioServicio(servicePrices.desayuno) }} € /Total</p>
           </div>
-          <button class="btn btn-custom" @click="toggleServiceSection">Reservar</button>
+          <button class="btn btn-custom" @click="selectService('desayuno')">Reservar</button>
         </li>
         <li
             class="list-group-item d-flex justify-content-between align-items-center"
@@ -58,7 +58,7 @@
             <strong>Media pensión</strong>
             <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} € + {{ calcularPrecioServicio(servicePrices.mediaPension) }} € /Total</p>
           </div>
-          <button class="btn btn-custom" @click="toggleServiceSection">Reservar</button>
+          <button class="btn btn-custom" @click="selectService('mediaPension')">Reservar</button>
         </li>
         <li
             class="list-group-item d-flex justify-content-between align-items-center"
@@ -67,7 +67,7 @@
             <strong>Pensión completa</strong>
             <p class="mb-0 text-muted">{{ calcularPrecioTotal(habitacion.precioBase) }} € + {{ calcularPrecioServicio(servicePrices.pensionCompleta) }} € /Total</p>
           </div>
-          <button class="btn btn-custom" @click="toggleServiceSection">Reservar</button>
+          <button class="btn btn-custom" @click="selectService('pensionCompleta')">Reservar</button>
         </li>
       </ul>
     </div>
@@ -92,6 +92,8 @@
 
 <script>
 import axios from 'axios';
+import authService from '../services/authService';
+import { reservaGlobal } from '../store/reservaGlobal';
 import categoria1 from '../assets/estandar.png';
 import categoria2 from '../assets/economy.png';
 import categoria3 from '../assets/deluxe.png';
@@ -112,7 +114,9 @@ export default {
       showServiceSection: false,
       services: [],
       filteredServices: [],
-      loading: true
+      loading: true,
+      token: null,
+      selectedService: null
     };
   },
   created() {
@@ -125,6 +129,7 @@ export default {
       this.fetchServicePrices();
       this.fetchAdditionalServices();
     }
+    this.token = authService.obtenerUsuarioDelToken();
   },
   methods: {
     async fetchServicePrices() {
@@ -159,10 +164,49 @@ export default {
     toggleServiceSection() {
       this.showServiceSection = !this.showServiceSection;
     },
-    confirmSelection() {
-      const selectedServices = this.filteredServices.filter(service => service.selected);
-      console.log('Selected additional services:', selectedServices);
-      this.showServiceSection = false;
+    async confirmSelection() {
+      if (!this.token) {
+        alert('Debe iniciar sesión antes de realizar la reserva.');
+        return;
+      }
+
+      try {
+        const userId = authService.obtenerUsuarioDelToken();
+        const response = await axios.get(`http://localhost:5288/api/Usuario/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        const clientData = response.data;
+
+        reservaGlobal.formulario = {
+          nombre: clientData.nombre,
+          apellidos: clientData.apellidos,
+          correo: clientData.email,
+          movil: clientData.movil,
+          fechaEntrada: this.fechaInicio,
+          fechaSalida: this.fechaFinal,
+        };
+        reservaGlobal.habitacion = this.habitacion;
+        reservaGlobal.servicios = this.filteredServices.filter(service => service.selected);
+
+        if (this.selectedService) {
+          reservaGlobal.servicios.push({
+            nombre: this.selectedService,
+            precioServicio: this.servicePrices[this.selectedService]
+          });
+        }
+
+        console.log(reservaGlobal);
+
+        this.$router.push('/resumen');
+      } catch (error) {
+        console.error('Error fetching client data:', error);
+      }
+    },
+    selectService(service) {
+      this.selectedService = service;
+      this.toggleServiceSection();
     },
     getImage(categoriaId) {
       switch (categoriaId) {
