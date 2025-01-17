@@ -83,21 +83,22 @@
   // Función para proceder con el pago
   const router = useRouter();
 
-  const procederPago = /*async*/ () => {
+  const procederPago = /*async*/ async () => {
     try{
         // Preparar el JSON
         const reserva = {
             fechaInicio: formulario.fechaEntrada,
             fechaFinal: formulario.fechaSalida,
-            precioTotal: precioTotal,
+            precioTotal: precioTotal.value,
             usuarioId: 1,
             habitacionId: habitacion.id,
-            servicios: servicios,
+            servicios: servicios.filter(servicio => servicio.seleccionado) // Filtrar solo los servicios seleccionados
+            .map(servicio => ({ id: servicio.id })), 
         };
 
         // Realizar el POST
-        //const response = await reservaService.crearReserva(reserva);
-        //console.log('Reserva realizada con éxito:', response);
+        const response = await reservaService.crearReserva(reserva);
+        console.log('Reserva realizada con éxito:', response);
 
         // Limpiar reserva global y redirigir
         limpiarReserva();
