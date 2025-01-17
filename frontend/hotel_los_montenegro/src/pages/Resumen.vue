@@ -8,6 +8,7 @@
           <p>Nombre: {{ formulario.nombre }}</p>
           <p>Apellidos: {{ formulario.apellidos }}</p>
           <p>Correo: {{ formulario.correo }}</p>
+          <p>DNI: {{ formulario.dni }}</p>
           <p>Móvil: {{ formulario.movil }}</p>
   
           <h4>Estancia</h4>
@@ -100,10 +101,10 @@
       const nuevoUsuario = {
         name: formulario.nombre,
         lastname: formulario.apellidos,
-        dni: "00000000A", // DNI por defecto
+        dni: formulario.dni,
         email: formulario.correo,
         password: "password", // Contraseña por defecto
-        phone: "000000000", // Teléfono por defecto
+        phone: "900000000", // Teléfono por defecto
         mobile: formulario.movil, // Móvil por defecto
         gender: "M",
         birthdate: "2000-01-01", // Fecha de nacimiento por defecto
