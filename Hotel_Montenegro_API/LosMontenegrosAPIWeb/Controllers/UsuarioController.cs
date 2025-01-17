@@ -268,5 +268,17 @@ namespace LosMontenegrosAPIWeb.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        // GET: api/Usuario/existeUsuario/{email}
+        [HttpGet("existeUsuario/{email}")]
+        public async Task<IActionResult> ExisteUsuario(string email)
+        {
+            var usuario = await _usuarioRepository.GetUsuarioByEmailAsync(email);
+            if (usuario != null)
+            {
+                return Ok(new { existe = true, id = usuario.Id });
+            }
+            return Ok(new { existe = false });
+        }
+
     }
 }
