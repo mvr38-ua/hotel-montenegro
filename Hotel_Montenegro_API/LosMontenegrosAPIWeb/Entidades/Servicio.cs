@@ -11,7 +11,7 @@ namespace LosMontenegrosAPIWeb.Entidades
         }
 
         public int Id { get; set; }
-        public string Nombre { get; set; } = null!;
+        public string? Nombre { get; set; } = null!;
         public string? Descripcion { get; set; }
         public double PrecioServicio { get; set; }
 

@@ -19,6 +19,22 @@ namespace LosMontenegrosAPIWeb.Repositories
         // Create
         public async Task AddReservaAsync(Reserva reserva)
         {
+            if (reserva.Servicios != null && reserva.Servicios.Any())
+            {
+                // Buscar los servicios que existen en la base de datos usando los IDs de la reserva
+                var servicios = await _context.Servicios
+                    .Where(s => reserva.Servicios.Select(rs => rs.Id).Contains(s.Id))
+                    .ToListAsync();
+
+                // Si el número de servicios encontrados no coincide con el número de servicios enviados, devolver error
+                if (servicios.Count != reserva.Servicios.Count)
+                {
+                    throw new ArgumentException("Algunos de los servicios no existen.");
+                }
+
+                // Asociar los servicios encontrados a la reserva
+                reserva.Servicios = new HashSet<Servicio>(servicios);
+            }
             await _context.Reservas.AddAsync(reserva);
             await _context.SaveChangesAsync();
         }
